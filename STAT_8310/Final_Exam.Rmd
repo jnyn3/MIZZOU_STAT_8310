@@ -1,0 +1,335 @@
+---
+title: "Final_Exam"
+author: "JAYADITYA NATH"
+date: "2023-12-05"
+output: pdf_document
+---
+
+
+PROBLEM 1. 
+
+
+
+Loading the dataset and renaming the columns : 
+
+
+```{r}
+data_1 = read.table("C:/Users/Jayaditya Nath/Downloads/FinalPr1Data.txt")
+
+library(dplyr)
+data_1 = data_1 %>%
+  rename("Y" = "V2","X1" = "V3","X2" = "V4","X3" = "V5","X4" = "V6","X5" = "V7","X6" = "V8","X7" = "V9","X8" = "V10","X9" = "V11","X10" = "V12","X11" = "V13")
+data_1
+```
+
+
+```{r}
+stem(data_1$X1)
+stem(data_1$X2)
+stem(data_1$X3)
+stem(data_1$X4)
+stem(data_1$X5)
+stem(data_1$X6)
+stem(data_1$X7)
+stem(data_1$X8)
+stem(data_1$X9)
+stem(data_1$X10)
+stem(data_1$X11)
+```
+
+Comment : The covariates do not seem to be normally distributed. Also, there are no large gaps in the stem and leaf plots, except for the categorical variables indicating the absence of outliers. 
+
+
+```{r}
+library(dplyr)
+pairs(data.frame(data_1$X1,data_1$X2,data_1$X3,data_1$X4,data_1$X5,data_1$X6,data_1$X7,data_1$X8,data_1$X9,data_1$X10,data_1$X11), pch =10, main="Scatter plot matrix")
+cor(data.frame(data_1$X1,data_1$X2,data_1$X3,data_1$X4,data_1$X5,data_1$X6,data_1$X7,data_1$X8,data_1$X9,data_1$X10,data_1$X11))
+```
+
+Comment : It seems that there is a tremendous problem of underlying multicollinearity among the covariates and some of the covariates need to be dropped to get good predictions from the fitted model
+
+
+```{r}
+par(mar=c(1,1,1,1))
+par(mfrow=c(6,2))
+plot(data_1$X1,data_1$Y,main = "Scatter plot of Y vs X1")
+plot(data_1$X2,data_1$Y,main = "Scatter plot of Y vs X2")
+plot(data_1$X3,data_1$Y,main = "Scatter plot of Y vs X3")
+plot(data_1$X4,data_1$Y,main = "Scatter plot of Y vs X4")
+plot(data_1$X5,data_1$Y,main = "Scatter plot of Y vs X5")
+plot(data_1$X6,data_1$Y,main = "Scatter plot of Y vs X6")
+plot(data_1$X7,data_1$Y,main = "Scatter plot of Y vs X7")
+plot(data_1$X8,data_1$Y,main = "Scatter plot of Y vs X8")
+plot(data_1$X9,data_1$Y,main = "Scatter plot of Y vs X9")
+plot(data_1$X10,data_1$Y,main = "Scatter plot of Y vs X10")
+plot(data_1$X11,data_1$Y,main = "Scatter plot of Y vs X11")
+```
+
+Comment : Leaving apart the categorical variables, it seems that only X1 and X7 kind of have a linear relationship with the response variable. 
+
+
+```{r}
+model_1 = lm(Y~(X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11)^2,data = data_1)
+summary(model_1)
+plot(model_1)
+```
+
+Comment : Primarily, it can be seen that several covariates can be dropped on the basis of the p-value. Also, the residual standard error seems to be a huge quantity compared to the values of the response variables. This means that the values of the predicted values of the response variable will be off by 63540 units, which is not a good estimate. There seem to be no influential outliers as all the observations are well within the Cook's distance line. 
+
+
+```{r}
+par(mfrow=c(1,1))
+res_1 = residuals.lm(model_1)
+sum(res_1)
+qqnorm(res_1)
+qqline(res_1,col="red")
+ks.test(res_1,"pnorm")
+```
+
+Comment : The assumption concerning the normality of errors does not seem to valid as many of the points are not on the line.
+
+
+```{r}
+library(car)
+durbinWatsonTest(model_1)
+
+plot(data_1$V1,res_1,type ="l")
+```
+
+Comment : Though the Durbin-Watson test concludes that the errors are autocorrelated, the autocorrelation plot of the residuals does not show the same and we can say that the errors are independent. 
+
+
+```{r}
+fit_1 = predict.lm(model_1)
+par(mar=c(5.1,4.1,4.1,2.1))
+plot(res_1,fit_1,main = "Residuals vs fitted values")
+```
+
+Comment : The residuals seem to be randomly scattered, thus the linearity assumption is valid. Also, the error variances do not seem to be homoscedastic. 
+
+
+Now, I perform forward stepwise regression to come up with the model of best fit : 
+
+```{r}
+library(olsrr)
+ols_step_forward_p(model_1,penter = 0.05,prem = 0.10,details = T)
+
+model_1_new = lm(Y~X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X1:X7+X7:X8+X8:X10+X1:X2+X7:X9+X1:X10+X1:X8+X4:X7+X7:X10+X2:X3+X4:X10,data = data_1)
+summary(model_1_new)
+plot(model_1_new)
+```
+
+Comment : The residual standard error seems to decrease a lot compared to the full model. Also, the values of the standard error for each estimate has reduced significantly. This means that the we can obtain better estimates of the sales price of houses compared to the original model. There seem to be no influential outliers as all the observations are well within the Cook's distance line. 
+
+```{r}
+res_new = residuals.lm(model_1_new)
+qqnorm(res_new)
+ks.test(res_new,"pnorm")
+```
+
+Comment : The normality assumption seems to hold true in the reduced model. 
+
+```{r}
+plot(predict.lm(model_1_new),res_new,main = "Residuals vs fitted values")
+abline(0,0,col="red")
+```
+
+Comment : The heteroscedasticity of the errors seem to remain as a problem in the new model as well. 
+
+
+Trying to fit the Iteratively Re-Weighted Least Square Regression model to tackle with the problem of non-constancy of error variance : 
+
+```{r}
+sq_res_new_2 = (res_new)^2
+wts = 1/(sq_res_new_2)
+
+
+model_wts = lm(Y~X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X1:X7+X7:X8+X8:X10+X1:X2+X7:X9+X1:X10+X1:X8+X4:X7+X7:X10+X2:X3+X4:X10,data = data_1,weights = wts)
+
+
+res_new_wts = residuals.lm(model_wts)
+sq_res_new_final = (res_new_wts)^2
+wts_1 = 1/(sq_res_new_final)
+
+
+model_wts_final = lm(Y~(X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X1:X7+X7:X8+X8:X10+X1:X2+X7:X9+X1:X10+X1:X8+X4:X7+X7:X10+X2:X3+X4:X10),data = data_1,weights = wts_1)
+summary(model_wts_final)
+
+plot(predict.lm(model_wts_final),residuals.lm(model_wts_final),main = "Residuals vs fitted values")
+abline(0,0,col="red")
+```
+
+Comment : The problem of heteroscedasticity remains. 
+
+
+Trying a log transformation of the response variable,
+
+```{r}
+model_final = lm(log(Y)~X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X1:X7+X7:X8+X8:X10+X1:X2+X7:X9+X1:X10+X1:X8+X4:X7+X7:X10+X2:X3+X4:X10,data = data_1,)
+summary(model_final)
+plot(model_final)
+plot(predict.lm(model_final),residuals.lm(model_final),main = "Residuals vs fitted values")
+abline(0,0,col="red")
+```
+
+Finally, the heteroscedasticity problem has been dealt with. Also, the normality can be concluded about strongly.
+
+
+Checking the predictive ability of the model using several metrics : 
+
+
+```{r}
+library("MLmetrics")
+MAPE(predict.lm(model_1),data_1$Y)
+MAPE(predict.lm(model_final),log(data_1$Y))
+
+library(Fgmutils)
+mspr(observados = (data_1$Y), estimados = predict.lm(model_1), nValidacao =  25)
+mspr(observados = log(data_1$Y), estimados = predict.lm(model_final), nValidacao =  25)
+
+
+PRESS_mod <- function(model) {
+  i <- residuals.lm(model)/(1 - lm.influence(model)$hat)
+  sum(i^2)
+}
+
+PRESS_mod(model_1_new)
+PRESS_mod(model_final)
+```
+
+comment : The metrics suggest that the new model has quite decent predictive ability and can be thus used for the prediction of sales price of houses based on the selected covariates.
+
+
+
+
+
+
+
+
+
+
+PROBLEM 2. 
+
+
+
+Loading the dataset and renaming the columns : 
+
+
+```{r}
+library(readxl)
+data_2 = read_xlsx("C:/Users/Jayaditya Nath/Downloads/FinalPr2Data.xlsx")
+data_2
+```
+
+
+Checking for interaction effects : 
+
+
+```{r}
+interaction.plot(factor(data_2$acid),factor(data_2$Comp),data_2$growth)
+interaction.plot(factor(data_2$Comp),factor(data_2$acid),data_2$growth)
+```
+
+Comment : There seems to be significant interaction between the factors.
+
+
+Trying out transformation of the response variable to check if the interactions can be ignored : 
+
+```{r}
+interaction.plot(factor(data_2$acid),factor(data_2$Comp),log(data_2$growth))
+interaction.plot(factor(data_2$Comp),factor(data_2$acid),log(data_2$growth))
+```
+
+Comment : The interactions are still significant and can not be ignored for the given experiment. 
+
+
+Checking for factor main effects : 
+
+```{r}
+barplot(c(mean(data_2$growth[(data_2$acid=="low")]),mean(data_2$growth[(data_2$acid=="high")])),names.arg = c("Low","High"),xlab = "Acid",ylab = "Means",main = "Barplot of means")
+barplot(c(mean(data_2$growth[(data_2$Comp=="Absent")]),mean(data_2$growth[(data_2$Comp=="Present")])),names.arg = c("Absent","Present"),xlab = "Presence of Competitive plant",ylab = "Means",main = "Barplot of means")
+barplot(c(mean(data_2$growth[(data_2$acid=="low") & (data_2$Comp=="Absent")]),mean(data_2$growth[(data_2$acid=="low") & (data_2$Comp=="Present")]),mean(data_2$growth[(data_2$acid=="high") & (data_2$Comp=="Absent")]),mean(data_2$growth[(data_2$acid=="high") & (data_2$Comp=="Present")])),names.arg = c("Low-Absence","Low-Presence","High-Absence","High-Absence"),xlab = "Treatment Combinations",ylab = "Treatment means",main = "Barplot of treatment means")
+```
+
+Comment : The primary notion is that the individual factor main effects as well as the treatment combinations seem to have significant effect on the mean growth of plant species. 
+
+
+Fitting the 2-way fixed effects anova model since no assumption about linearity between the response and covariates is given and also the covariates are categorical : 
+
+```{r}
+model_2 = aov(growth~acid*Comp,data = data_2)
+summary(model_2)
+
+plot(model_2)
+```
+
+The appropriate model is : $Y_{ijk}=\mu_{..}+\alpha_{i}+\beta_{j}+(\alpha\beta)_{ij}+\epsilon_{ijk}$ ; i = 1(|)2, j = 1(|)2, k = 1(24)
+
+where, 
+
+$Y_{ijk}$ is the kth response corresponding to the ith level of factor "acid" and jth level of factor "Comp"
+
+$\mu_{..}$ is the grand mean
+
+$\alpha_{i}$ is the ith level of factor "acid" ; $\sum_{i}\alpha_{i} = 0$
+
+$\beta_{j}$ is the jth level of factor "Comp" ; $\sum_{j}\beta_{j} = 0$
+
+$\alpha\beta_{ij}$ is the interaction due to the ith level of factor "acid" and the  jth level of factor "Comp" ; $\sum_{i}\alpha\beta_{ij} = 0$ and $\sum_{j}\alpha\beta_{ij} = 0$
+
+$\epsilon_{ijk}$ is the kth residual corresponding to the ith level of factor "acid" and jth level of factor "Comp" ; $\epsilon_{ijk}$~N(0,$\sigma^2$)
+
+Comment : The ANOVA table helps us to conclude that the main factor effects as well as the interactions between them are significant covariates of the model, on the basis of the p-value approach. Here, I use $\alpha < 1 - (1-0.05)(1-0.05)$ = 0.90 as an upper bound of the family of coefficients using the Kimball inequality. 
+
+From the residual vs fitted plot, we can confirm the assumption of constancy of error variances.
+From the normal Q-Q plot, we can conclude that the assumption of normality is valid. 
+
+
+Chceking fro independence of errors : 
+
+```{r}
+res_2 = residuals.lm(model_2)
+
+library(car)
+durbinWatsonTest(model_2)
+```
+
+Comment : The errors are independent. 
+
+
+```{r}
+fit_2 = predict.lm(model_2)
+
+barplot(c(mean(fit_2[(data_2$acid=="low")]),mean(fit_2[(data_2$acid=="high")])),names.arg = c("Low","High"),xlab = "Acid",ylab = "Estimated factor level means",main = "Barplot of estimated factor level means of Acid")
+barplot(c(mean(fit_2[(data_2$Comp=="Absent")]),mean(fit_2[(data_2$Comp=="Present")])),names.arg = c("Absent","Present"),xlab = "Competitive tree",ylab = "Estimated factor level means",main = "Barplot of estimated factor level means of Competitive tree")
+barplot(c(mean(fit_2[(data_2$acid=="low") & (data_2$Comp=="Absent")]),mean(fit_2[(data_2$acid=="low") & (data_2$Comp=="Present")]),mean(fit_2[(data_2$acid=="high") & (data_2$Comp=="Absent")]),mean(fit_2[(data_2$acid=="high") & (data_2$Comp=="Present")])),names.arg = c("Low-Absence","Low-Presence","High-Absence","High-Absence"),xlab = "Treatment Combinations",ylab = "Estimated treatment means",main = "Barplot of estimated treatment means")
+```
+
+Comment : Graphical representations are at par with the conclusion from the model and thus our primary notion holds true. 
+
+Checking for additivity among the two factors of the given experiment : 
+
+```{r}
+library(asbio)
+tukey.add.test(data_2$growth,data_2$acid,data_2$Comp)
+```
+
+Comment : We fail to reject the null hypothesis at 5% level of significance, so we can conclude that the two factors in the given experiment are additive in nature. 
+
+Making pairwise comparisons of the different factors : 
+
+```{r}
+TukeyHSD(model_2,"acid",conf.level = 0.95)
+TukeyHSD(model_2,"Comp",conf.level = 0.95)
+```
+
+Comment : As the p-value is less than 0.05, we reject the null hypothesis at 5% level of significance and thus conclude that the difference in means for the different factor levels of the two factors in the given experiment are significant. 
+
+
+
+
+
+
+
+
+
