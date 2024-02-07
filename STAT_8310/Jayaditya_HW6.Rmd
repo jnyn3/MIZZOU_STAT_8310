@@ -1,0 +1,601 @@
+---
+title: "STAT_8310_HW6_JayadityaNath"
+author: "JAYADITYA NATH"
+date: "2023-10-06"
+output: pdf_document
+---
+
+
+PROBLEM 1.
+
+Initializing the matrices : 
+
+```{r}
+A = rbind(c(1, 4),
+           c(2, 6),
+           c(3, 8))
+B = rbind(c(1, 3),
+          c(1, 4),
+          c(2, 5))
+C = rbind(c(3, 8, 1),
+          c(5, 4, 0))
+```
+
+
+Part (a)
+
+
+```{r}
+A + B
+```
+
+
+
+Part (b) 
+
+
+
+```{r}
+A - B
+```
+
+
+Part (c)
+
+
+
+```{r}
+A%*%C
+```
+
+
+Part (d)
+
+
+```{r}
+A%*%t(B)
+```
+
+
+
+PROBLEM 2.
+
+
+Initializing the required matrix : 
+
+
+```{r}
+library(Matrix)
+B = matrix(c(1, 5, 0, 1, 0, 5, 1, 0, 5),byrow = T,nrow = 3)
+```
+
+
+
+Part (a)
+
+
+```{r}
+rankMatrix(B)[1]
+```
+
+Comment : As B is not a full rank matrix, the column vectors of B are linearly dependent.
+
+
+Part (b)
+
+
+```{r}
+rankMatrix(B)[1]
+```
+
+
+Part (c) 
+
+
+```{r}
+det(B)
+```
+
+
+
+PROBLEM 3.
+
+
+Part (a) 
+
+
+```{r}
+A = matrix(c(5,23,2,7),nrow=2)
+A
+b_curl = matrix(c(8,28),nrow = 2)
+b_curl
+```
+
+
+Part (b)
+
+
+```{r}
+solve(A,b_curl)
+```
+
+
+PROBLEM 4.
+
+
+
+```{r}
+A = matrix(c(7,-4,-4,8),nrow=2)
+A
+```
+
+
+
+PROBLEM 5.
+
+Part (a) 
+
+
+The matrix is $\left[\begin{array}{ccc}1 & X_{i1} & X_{i2}\\1 & . & .\\1 & . & .\end{array}\right]$ , where i ranges from 1 to n(say).
+And $\beta$ = ($\beta_{0}$,$\beta_{1}$,$\beta_{2}$)'
+
+Part (b)
+
+
+
+The matrix is $\left[\begin{array}{ccc}1 & X_{i1} & X_{i2}\\1 & . & .\\1 & . & .\end{array}\right]$ , where i ranges from 1 to n(say).
+And $\beta$ = ($\beta_{0}$,$\beta_{1}$,$\beta_{2}$)'
+
+
+
+PROBLEM 6.
+
+
+
+Loading the dataset in R : 
+
+
+```{r}
+data_6 = read.table("C:/Users/Jayaditya Nath/Downloads/HW6Pr6Data.txt")
+library(dplyr)
+data_6 = data_6%>%
+  rename("Y"="V1","X1"="V2","X2"="V3","X3"="V4")
+```
+
+
+
+Part (a)
+
+
+```{r}
+stem(data_6$X1)
+
+stem(data_6$X2)
+```
+
+Comment : I do not think there are any outlying cases present in the stem and leaf plots for both X1 and X2. Also, there are evidently no gaps in the data.
+
+
+Part (b) 
+
+
+```{r}
+par(mfrow = c(3,1))
+week = seq(1,52,1)
+plot(week,data_6$X1,type='l',xlab="weeks",ylab="X1",main="Time plot for X1")
+plot(week,data_6$X2,type='l',xlab="weeks",ylab="X2",main="Time plot for X2")
+plot(week,data_6$X3,type='l',xlab="weeks",ylab="X3",main="Time plot for X3")
+```
+
+Comment : The plots for the predictor variables X1 and X2 seem to be auto-correlated as each observation does not seem close to each other. However, the plot for X3 seem to show somewhat of seasonality as the jumps occur at certain intervals.
+
+
+Part (c) 
+
+
+```{r}
+pairs(data.frame(data_6$Y,data_6$X1,data_6$X2,data_6$X3), pch =19, main="Scatter plot matrix")
+cor(data.frame(data_6$Y,data_6$X1,data_6$X2,data_6$X3))
+```
+
+
+Comment : Both the plots and the correlation matrix show that there is no multicollinearity among the predictor variables of the dataset and thus can be used for regression estimation. 
+
+
+
+Part (d) 
+
+
+```{r}
+model_6 = lm(Y~X1+X2+X3, data=data_6)
+summary(model_6)
+```
+
+Comment : The estimated regression function is : 
+
+$\beta_{1}$ can be interpreted as the rate of change in the response variable when the number of cases shipped increases by 1.
+
+$\beta_{2}$ can be interpreted as the indirect costs of the total labour hours as a percentage increases by 1.
+
+$\beta_{3}$ can be interpreted as the change in the intercept term of the response function for X3 = 1 compared to X3 = 0.
+
+
+
+Part (e) 
+
+
+```{r}
+res_6 = residuals(model_6)
+boxplot(res_6, main="Boxplot of residuals")
+```
+
+Comment : The boxplot shows that the residuals are positively skewed and thus we can say that the normality assumption of the residuals is violated in the given model since, the normal distribution is symmetric.
+
+
+
+Part (f) 
+
+
+```{r}
+fit_6 = predict(model_6)
+par(mfrow=c(1,5))
+plot(fit_6,res_6, main = "Residuals vs fit plot",xlab="Fitted values", ylab= "Residuals")
+abline(0,0,col = "red")
+
+plot(data_6$X1,res_6, main = "Rsiduals vs X1 plot",xlab="X1", ylab= "Residuals")
+abline(0,0,col = "red")
+
+plot(data_6$X2,res_6, main = "Residuals vs X2 plot",xlab="X2", ylab= "Residuals")
+abline(0,0,col="red")
+
+plot(data_6$X3,res_6, main = "Residuals vs X3 plot",xlab="X3", ylab= "Residuals")
+abline(0,0,col="red")
+
+plot(data_6$X1*data_6$X2,res_6, main = "Residuals vs X1X2 plot",xlab="X1X2", ylab= "Residuals")
+abline(0,0,col="red")
+
+
+par(mfrow=c(1,1))
+qqnorm(res_6,main="Normal Q-Q plot of residuals")
+qqline(res_6,col="red")
+```
+
+Comment : The residuals vs X1, residual vs X2 and the residual vs X1X2 plots show that there is a random pattern in the data and the points are distributed evenly on both sides of the line y = 0. thus, inclusion of these predictors are essential. However, the residual vs fit and residual vs X3 does not seem to be distributed in a way that it can be considered a proper fit to the data as there is a pattern to it and thus, we may need to drop one or more predictors and obtain different models for the data to get a more optimal fit.
+
+We also can not conclude that the residuals are properly normal as several points are not falling on the line of best fit.
+
+Part (g) 
+
+
+```{r}
+sort(fit_6)
+data_6["Groups"]=ifelse(fit_6<sort(fit_6[26]),'group_1','group_2')
+
+library("onewaytests")
+bf.test(res_6~Groups,data_6,alpha=0.01)
+```
+
+
+The decision rule is : We reject the null hypothesis if the p-value is less than or equal to 0.01.
+
+We observe that the p-value is greater than the 1% level of significance and so, we fail to reject the null hypothesis at 1% level of significance. So, we can conclude that the errors are similarly distributed for the two groups of data.
+
+
+
+
+Part (h) 
+
+
+```{r}
+model_6 = lm(Y~X1+X2+X3, data=data_6)
+summary(model_6)
+```
+
+The alternative hypothesis is : $H_{a}$ : there exists a relation.
+
+The decision rule is : We reject the null hypothesis if the p-value is less than or equal to the level of significance.
+
+The p-value of the test is 3.316e-12.
+
+Here, we observe that the p-value of the given test is less than the 5% level of significance, thus we reject the null hypothesis at 5% level of significance. So, we can conclude that there is a regression relation among the response and predictor variables. 
+
+The individual p-values for $\beta_{1}, \beta_{2}$ and $\beta_{3}$ show that only $\beta_{2}$ has a significant effect  in the model.
+
+
+
+Part (i) 
+
+
+```{r}
+library(api2lm)
+predict_adjust(model_6,data.frame(X1=c(30200,245000,280000,350000,295000),
+                                 X2=c(7.20,7.40,6.90,7.00,6.70),X3=c(0,0,0,0,1)),
+               interval = "confidence", level = 0.95,method = "wh")
+
+predict_adjust(model_6,data.frame(X1=c(30200,245000,280000,350000,295000),
+                                 X2=c(7.20,7.40,6.90,7.00,6.70),X3=c(0,0,0,0,1)),
+               interval = "confidence", level = 0.95,method = "bonferroni")
+```
+
+Comment : The Bonferroni estimates are more efficient.
+
+
+
+Part (j) 
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data = data_6,aes(X1,X2),col="black")+
+  geom_point()+
+  geom_point(aes(282000,7.10),col="red")+
+  geom_point(aes(400000,9.9),col="blue")
+```
+
+Comment : The first set of coordinates fall within the scope of the model, however, the second set of cordinates does not.
+
+
+
+
+Part (k) 
+
+
+```{r}
+predict_adjust(model_6,data.frame(X1=c(230000,250000,280000,340000),
+                                  X2=c(7.50,7.30,7.10,6.90),X3=c(0,0,0,0)),
+               interval = "prediction", level = 0.95,method = "wh")
+
+predict_adjust(model_6,data.frame(X1=c(230000,250000,280000,340000),
+                                  X2=c(7.50,7.30,7.10,6.90),X3=c(0,0,0,0)),
+               interval = "prediction", level = 0.95,method = "bonferroni")
+
+predict_adjust(model_6,data.frame(X1=c(230000,250000,280000,340000),
+                                  X2=c(7.50,7.30,7.10,6.90),X3=c(0,0,0,0)),
+               interval = "prediction", level = 0.95,method = "scheffe")
+```
+
+Comment : The Bonferroni approach gives the tightest interval estimates.
+
+
+Part (l) 
+
+
+```{r}
+l = predict_adjust(model_6,data.frame(X1=c(282000),
+                                  X2=c(7.10),X3=c(0)),
+               interval = "prediction", level = 0.95,method = "bonferroni")
+l
+```
+
+
+
+Part (m) 
+
+
+```{r}
+l[,2:2]*length(data_6$Y)
+l[,3]*length(data_6$Y)
+```
+
+
+
+Part (n)
+
+
+```{r}
+model_6_new = lm(Y~X1+X3+X2, data=data_6)
+anova(model_6_new)
+```
+
+SSR(X1) = 136366
+
+SSR(X3|X1) = 2033565
+
+SSR(X2|X1,X3) = 6675
+
+Part (o) 
+
+
+```{r}
+model_6_reduced = lm(Y~X1+X3, data=data_6)
+anova(model_6_reduced,model_6_new)
+```
+
+
+The alternative hypothesis is $H_{a}$ : $\beta_{2}\neq0$.
+
+The decision rule is : We reject the null hypothesis if the p-value is less than or equal to the level of significance.
+
+The p-value of the test is 0.5712.
+
+Here, we observe that the p-value of the given test is greater than the 5% level of significance, thus we fail to reject the null hypothesis at 5% level of significance. So, we can conclude that dropping X2 is a good option.
+
+
+
+Part (p) 
+
+
+```{r}
+model_6_new_1 = lm(Y~X1+X2+X3, data=data_6)
+anova(model_6_new_1)
+
+model_6_new_2 = lm(Y~X2+X1+X3, data=data_6)
+anova(model_6_new_2)
+```
+
+
+Comment : The required SSR's sum to be equal to each other. Generally, the SSR's have same value if the estimated coefficients corresponding to the predictors take a zero value, otherwise, the SSR's increase if adding the variable improves the fit of the model.
+
+
+Part (q) 
+
+
+```{r}
+model_6_reduced_new = lm(Y~X1+X2, data=data_6)
+anova(model_6_reduced_new,model_6_new)
+```
+
+The alternative hypothesis is : $H_{a}$ : $\beta{1}\neq1,\beta_{3}\neq0$.
+
+The decision rule is : The decision rule is : We reject the null hypothesis if the p-value is less than or equal to the level of significance. 
+
+Here, we observe that the p-value of the given test is less than the 5% level of significance, thus we reject the null hypothesis at 5% level of significance. So, we can conclude that dropping X3 is a good option and the coefficient of X1 is 1.
+
+
+
+
+
+
+
+
+PROBLEM 7. 
+
+
+In the given situation, I think that it would not be wise to agree with the classmate of the junior investment analysis because the conclusion of whether the fitted model is a good one or not is being reached on the basis of the fact the value of the $R^{2}$ being a very high one. Instead, doing an analysis of the residuals using normality plot of the residuals, residual vs fit, etc to check whether the model meets the assumptions of regression properly or not would help us be more sure of the fact that the fitted values are clode to the original values in all capacity.
+
+
+
+
+PROBLEM 8. 
+
+
+
+In a regression study of factors affecting the learning time for a specific task, the gender of the learner was included as a predictor variable and it was found that it resulted into a positive coefficient at the end of the analysis. So, one observer questioned whether the inclusion of the gender is fair because he/she thinks that the positive coefficient of the covariate leads to longer learning times for males than females. I think that this interpretation is completely incorrect because he/she is implying causation in the statement, but, this is actually not the case in regression. Regression coefficients of predictor variables are just measures of association between the response variable and the predictors, which does not imply any kind of causation. The claim of causation requires farther detailed analysis.
+
+
+
+
+
+PROBLEM 9.
+
+
+Part (a) 
+
+
+Response function for "hard hat" protection category : 
+E(Y) = $\beta_{0}+\beta_{1}X_{1}+\beta_{2}X_{2}+\beta_{3}(0)$
+
+Response function for "bump cap" protection category : 
+E(Y) = $\beta_{0}+\beta_{1}X_{1}+\beta_{2}(0)+\beta_{3}X_{3}$
+
+Response function for "none" protection category : 
+E(Y) = $\beta_{0}+\beta_{1}X_{1}+\beta_{2}(0)+\beta_{3}(0)$
+
+
+
+Part (b) 
+
+The required null and alternative hypotheses are : 
+
+(i) $H_{0}$ : $\beta_{3}=0$ vs $H_{a}$ : not $H_{0}$
+
+(ii) $H_{0}$ : $\beta_{2}-\beta_{3}=0$ vs $H_{a}$ : not $H_{0}$
+
+
+
+
+PROBLEM 10.
+
+
+
+I do not agree with the interpretation of the results obtained by the trainee. Here, the summer season is considered as X1 = X2 = X3 = 0. So, I think that the correct interpretation for $\beta_{1}=0,\beta_{0}\neq0,\beta_{2}\neq0,\beta_{3}\neq0$ should be that climatic and other seasonal factors have no influence in determining sales of the shoe line in winter season when compared to the summer season and also, seasonal influence exists in other seasons when compared to the summer season.
+
+
+
+
+PROBLEM 11.
+
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+
+```{r}
+data_11_1 = read.table("C:/Users/Jayaditya Nath/Downloads/HW6Pr11Data1.txt")
+data_11_1 = data_11_1%>%
+  rename("Y"="V1","X1"="V2")
+
+data_11_2 = read.table("C:/Users/Jayaditya Nath/Downloads/HW6Pr11Data2.txt")
+data_11_2 = data_11_2%>%
+  rename("X2"="V1")
+```
+
+
+Part (a) 
+
+
+
+$\beta_{1}$ can be interpreted as the rate of change in the response variable when the ACT score increases by 1.
+$\beta_{2}$ can be interpreted as the change in the intercept term of the response function for X2 = 1 compared to X2 = 0.
+
+
+
+Part (b) 
+
+
+```{r}
+model_11 = lm(data_11_1$Y~data_11_1$X1+data_11_2$X2)
+summary(model_11)
+```
+
+
+The estimated regression equation is : E(Y) = 2.19842 + 0.03789X1 - 0.09430X2
+
+
+Part (c) 
+
+The alternative hypothesis is $H_{a}$ : $\beta_{2}\neq0$.
+the decision rule is : We reject the null hypothesis if p-value less than or equal to the level of significance.
+
+
+```{r}
+residuals(model_11)
+plot(data_11_2$X2,residuals(model_11),xlab = "X2", ylab = "Residuals",main = "Residual vs X2")
+abline(0,0,col="red")
+```
+
+
+Comment : We can observe from the model summary that the p-value of the estimate of X2 is very large compared to the significance level of 1%. Thus, we fail to reject the null hypothesis at 1% level of significance and conclude that X2 does not have any significant contribution in our model. I have supported my conclusion graphically using a residual vs X2 plot, where, we can observe a clear patter in the data points, which are not in any sense random.
+
+
+
+Part (d) 
+
+
+```{r}
+residuals(model_11)
+plot(data_11_1$X1*data_11_2$X2,residuals(model_11),xlab = "X1X2",ylab = "Residuals",main = "Residual vs Interaction")
+abline(0,0,col="red")
+```
+
+
+Comment : The data seem to have some kind of pattern to it, which does not make it random and thus, I think that inclusion of the interaction effect would not improve the model.
+
+
+Part (e) 
+
+
+```{r}
+model_11_1 = lm(data_11_1$Y~data_11_1$X1+data_11_2$X2+data_11_1$X1*data_11_2$X2)
+summary(model_11_1)
+```
+
+The estimated regression line is : E(Y) = 3.226318 - 0.002757X1 - 1.649577X2 + 0.062245X1X2
+
+
+Part (f) 
+
+
+```{r}
+model_11_1_reduced = lm(data_11_1$Y~data_11_1$X1+data_11_2$X2)
+anova(model_11_1_reduced,model_11_1)
+```
+
+
+Conclusion : The p-value of the given test is 0.0205. As the p-value is less than the 5% level of significance, we reject the null hypothesis at this level of significance. Thus, we can conclude that the interaction effect can not be dropped from the model. This type of interaction is known as ordinal interaction.
+
+
+
+

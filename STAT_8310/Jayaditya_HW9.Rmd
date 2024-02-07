@@ -1,0 +1,983 @@
+---
+title: "STAT_8310_HW9"
+author: "JAYADITYA NATH"
+date: "2023-11-15"
+output: pdf_document
+---
+
+
+
+
+PROBLEM 1. 
+
+
+
+Loading the dataset : 
+
+
+```{r}
+data_2 = data.frame(Y = c(34,23,36,40,29,42), A = c(1,1,1,2,2,2), B = c(1,2,3,1,2,3))
+```
+
+
+Part (a) 
+
+
+```{r}
+factor_A_mean_1 = mean(data_2[data_2$A==1,"Y"])
+factor_A_mean_2 = mean(data_2[data_2$A==2,"Y"])
+factor_A_mean_1
+factor_A_mean_2
+```
+
+
+Part (b) 
+
+
+```{r}
+main_effect_A = abs(factor_A_mean_1 - factor_A_mean_2)
+main_effect_A
+```
+
+
+
+Part (c) 
+
+
+Interaction seems to be present when the value of the response variable on the basis of one factor is influenced by the change in different levels of the other factor. Here, the different levels of factor B influence the value of the response variable on the basis of level 1 of factor A, implying possible interactions.
+
+
+
+
+Part (d) 
+
+
+
+```{r}
+interaction.plot(factor(data_2$B),factor(data_2$A),data_2$Y,xlab = "B",ylab = "Y")
+```
+
+Conclusion : The two factors seem to be not interacting with each other.
+
+Part (e) 
+
+
+```{r}
+anova(lm(Y~A+B,data = data_2))
+
+sigma_sq = 1.96
+n = 10
+mean_to = (factor_A_mean_1+factor_A_mean_2)/2
+expectation_MSA = sigma_sq + ((n*3)*(sum(((factor_A_mean_1-mean_to)^2),((factor_A_mean_2-mean_to)^2))))
+expectation_MSA
+expectation_MSE = sigma_sq
+expectation_MSE
+```
+
+
+
+Part (f) 
+
+
+E(MSA) is substantially larger than E(MSE). 
+This suggests that there is presence of variability among the different levels of the factor A, thus indicating different treatment means.
+
+
+
+
+
+PROBLEM 2. 
+
+
+
+Loading the data : 
+
+```{r}
+data_1 = read.table("C:/Users/Jayaditya Nath/Downloads/Hw9Pr2Data.txt")
+data_1
+
+library(dplyr)
+data_1 = data_1%>%
+  rename("Y"="V1","A"="V2","B"="V3")
+data_1
+```
+
+
+
+Part (a) 
+
+
+
+```{r}
+mod_1 = aov(Y~A*B,data = data_1)
+summary(mod_1)
+fit_1 = fitted(mod_1)
+fit_1
+```
+
+
+
+Part (b) 
+
+
+
+```{r}
+res_1 = residuals.lm(mod_1)
+sum(res_1)
+res_1[(data_1$A==1) & (data_1$B==1)]
+sum(res_1[(data_1$A==1) & (data_1$B==1)])
+sum(res_1[(data_1$A==1) & (data_1$B==2)])
+sum(res_1[(data_1$A==2) & (data_1$B==1)])
+sum(res_1[(data_1$A==2) & (data_1$B==2)])
+sum(res_1[(data_1$A==3) & (data_1$B==1)])
+sum(res_1[(data_1$A==3) & (data_1$B==2)])
+```
+
+
+
+Part (c) 
+
+
+
+```{r}
+par(mfrow=c(3,2))
+plot(fit_1[(data_1$A==1) & (data_1$B==1)] ,res_1[(data_1$A==1) & (data_1$B==1)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 1-1")
+plot(fit_1[(data_1$A==1) & (data_1$B==2)] ,res_1[(data_1$A==1) & (data_1$B==2)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 1-2")
+plot(fit_1[(data_1$A==2) & (data_1$B==1)] ,res_1[(data_1$A==2) & (data_1$B==1)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 2-1")
+plot(fit_1[(data_1$A==2) & (data_1$B==2)] ,res_1[(data_1$A==2) & (data_1$B==2)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 2-2")
+plot(fit_1[(data_1$A==3) & (data_1$B==1)] ,res_1[(data_1$A==3) & (data_1$B==1)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 3-1")
+plot(fit_1[(data_1$A==3) & (data_1$B==2)] ,res_1[(data_1$A==3) & (data_1$B==2)],xlab = "Fitted values",ylab = "Residuals",main = "Treatment 3-2")
+```
+
+Conclusion : The residual vs fitted plots show that the spread along the line y = 0 is not the same for all the treatment effects, which departs from the assumption of same variability among the different groups. 
+
+
+
+Part (d) 
+
+
+
+```{r}
+par(mfrow=c(1,1))
+qqnorm(res_1)
+qqline(anova(lm(Y~A*B,data = data_1)))
+```
+
+Conclusion : The normality assumption does not seem to be valid here. 
+
+
+
+Part (e) 
+
+
+```{r}
+par(mfrow=c(3,2))
+plot(seq(1,length(res_1[(data_1$A==1) & (data_1$B==1)])),res_1[(data_1$A==1) & (data_1$B==1)],xlab = "Time order",ylab = "Residuals",main = "Treatment 1-1")
+plot(seq(1,length(res_1[(data_1$A==1) & (data_1$B==2)])),res_1[(data_1$A==1) & (data_1$B==2)],xlab = "Time order",ylab = "Residuals",main = "Treatment 1-2")
+plot(seq(1,length(res_1[(data_1$A==2) & (data_1$B==1)])),res_1[(data_1$A==2) & (data_1$B==1)],xlab = "Time order",ylab = "Residuals",main = "Treatment 2-1")
+plot(seq(1,length(res_1[(data_1$A==2) & (data_1$B==2)])),res_1[(data_1$A==2) & (data_1$B==2)],xlab = "Time order",ylab = "Residuals",main = "Treatment 2-2")
+plot(seq(1,length(res_1[(data_1$A==3) & (data_1$B==1)])),res_1[(data_1$A==3) & (data_1$B==1)],xlab = "Time order",ylab = "Residuals",main = "Treatment 3-1")
+plot(seq(1,length(res_1[(data_1$A==3) & (data_1$B==2)])),res_1[(data_1$A==3) & (data_1$B==2)],xlab = "Time order",ylab = "Residuals",main = "Treatment 3-2")
+```
+
+Conclusion : The residuals seem to be distributed randomly over time, thus making the error terms uncorrelated. This implies that there are no interaction effects. 
+
+
+
+Part (f) 
+
+
+
+```{r}
+par(mfrow=c(1,1))
+barplot(c(mean(fit_1[(data_1$A==1) & (data_1$B==1)]),mean(fit_1[(data_1$A==1) & (data_1$B==2)]),mean(fit_1[(data_1$A==2) & (data_1$B==1)]),mean(fit_1[(data_1$A==2) & (data_1$B==2)]),mean(fit_1[(data_1$A==3) & (data_1$B==1)]),mean(fit_1[(data_1$A==3) & (data_1$B==2)])),names.arg = c("1-1","1-2","2-1","2-2","3-1","3-2"),xlab = "Treatments",ylab = "Estimated means",main = "Barplot of estimated treatment means")
+```
+
+Conclusion : It partly seem from the barplot that the effect of factor B is present, but we can not be sure and further analysis needs to be done. 
+
+
+
+Part (g) 
+
+
+```{r}
+anova(lm(Y~A*B,data = data_1))
+```
+
+Comment : The residuals account mostly for the variation in the fitted mode, which implies that most of the ariability in the model remains unexplained by the factors included. 
+
+
+
+Part (h) 
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : No interactions are present vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.6024
+As the p-value is greater than the level $\alpha$ = 0.05, we fail to reject the null hypothesis at 5% level of significance. Thus, there are no interaction effects present. 
+
+
+
+Part (i) 
+
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : effect of factor A is not present vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.9537
+As the p-value is greater than the level $\alpha$ = 0.05, we fail to reject the null hypothesis at 5% level of significance. Thus, the effect of factor A is not present. 
+
+The hypotheses to be tested are : 
+$H_{0}$ : effect of factor B is not present vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.5087
+As the p-value is greater than the level $\alpha$ = 0.05, we fail to reject the null hypothesis at 5% level of significance. Thus, the effect of factor B is not present.
+I think that testing for the main effects is not useful because we have seen previously that residuals account for the most variation in the mode, thus signifying that the factors A and B have not been able to explain most of the variability present in the model.
+
+
+
+Part (j) 
+
+
+Here, we are using $\alpha$ = 0.10 on the basis of parts (h) and (i) using the Kimball inequality.
+
+
+Part (k) 
+
+
+
+Yes, the results in parts (h) and (i) confirm my graphical analysis in part (f) mostly. 
+
+
+
+Part (l) 
+
+
+
+```{r}
+library(DescTools)
+A = as.factor(data_1$A)
+B = as.factor(data_1$B)
+mod_1_1 = aov(data_1$Y~A*B)
+
+library(emmeans)
+
+marginal_means = emmeans(mod_1_1,~A:B)
+marginal_means[1]
+```
+
+
+
+Part (m) 
+
+
+
+```{r}
+barplot(c(mean(fit_1[(data_1$B==1)]),mean(fit_1[(data_1$B==2)])),names.arg = c("1","2"),xlab = "Treatments",ylab = "Estimated means",main = "Barplot of estimated factor level means of B")
+```
+
+Comment : The factor level means of B seem to be almost equal. 
+
+
+Part (n) 
+
+
+
+```{r}
+t.test(data_1[(data_1$B==1),"Y"] - data_1[(data_1$B==2),"Y"],alternative = "two.sided",conf.level = 0.95)
+```
+
+Comment : As the estimated value lies inside the confidence interval, we fail to reject the null hypothesis and thus, conclude that the the factor level means of B are equal. 
+This is consistent with the finding in part (m).
+
+
+
+Part (o) 
+
+
+
+```{r}
+barplot(c(mean(fit_1[(data_1$A==1)]),mean(fit_1[(data_1$A==2)]),mean(fit_1[(data_1$A==2)])),names.arg = c("1","2","3"),xlab = "Treatments",ylab = "Estimated means",main = "Barplot of estimated factor level means of A")
+```
+
+Comment : Comment : The factor level means of A seem to be almost equal.
+
+
+
+Part (p) 
+
+
+```{r}
+TukeyHSD(mod_1_1,"A",conf.level = 0.90)
+```
+
+Comment : As the estimated values lie inside the confidence intervals, we fail to reject the null hypothesis and thus, conclude that the the factor level means of A are equal. 
+This is consistent with the finding in part (o). 
+
+
+
+Part (q) 
+
+
+```{r}
+PostHocTest(mod_1_1,"A",method = "scheffe", conf.level = 0.90)
+PostHocTest(mod_1_1,"A",method = "bonferroni", conf.level = 0.90)
+```
+
+Comment : The Tukey's pairwise comparison approach gives the tightest confidence interval thus being the most efficient approach. 
+
+
+
+Part (r) 
+
+
+
+```{r}
+library(multcomp)
+confint(glht(mod_1_1, linfct = mcp(A = c(1/2,1/2,-1)), alternative = "two.sided"),level = 0.90)
+```
+
+Comment : As the estimated value lies inside the confidence interval, we fail to reject the null hypothesis and thus, conclude that the sum of the 1st and 3rd factor level means of A is equal to twice the 2nd factor level mean of A.
+
+
+
+
+PROBLEM 3.  
+
+
+Loading the data : 
+
+
+
+```{r}
+data_3 = data.frame(Y = c(16.5,21.4,11.8,17.3,12.3,16.9,16.6,21.0), A = c(1,1,2,2,3,3,4,4),B = c(1,2,1,2,1,2,1,2))
+data_3
+```
+
+
+
+Part (a) 
+
+
+```{r}
+interaction.plot(factor(data_3$B),factor(data_3$A),data_3$Y,xlab = "B",ylab = "Y")
+
+barplot(c(mean(data_3$Y[(data_3$A==1) & (data_3$B==1)]),mean(data_3$Y[(data_3$A==1) & (data_3$B==2)]),mean(data_3$Y[(data_3$A==2) & (data_3$B==1)]),mean(data_3$Y[(data_3$A==2) & (data_3$B==2)]),mean(data_3$Y[(data_3$A==3) & (data_3$B==1)]),mean(data_3$Y[(data_3$A==3) & (data_3$B==2)]),mean(data_3$Y[(data_3$A==4) & (data_3$B==1)]),mean(data_3$Y[(data_3$A==4) & (data_3$B==2)])),names.arg = c("1-1","1-2","2-1","2-2","3-1","3-2","4-1","4-2"),xlab = "Treatments",ylab = "Means",main = "Barplot of means")
+```
+
+Comment : It seems that there is no interaction between the factors location and week as the lines seem to be parallel to each other.
+Also, there seems to be significant presence of the main effects of A and B from the barplot.
+
+
+Part (b) 
+
+
+```{r}
+anova(lm(Y~A+B,data=data_3))
+```
+
+
+Using the Kimball inequality, an upper bound for the family level of significance is 0.90. 
+
+The hypotheses to be tested are : 
+$H_{0}$ : effect of factor A is not present vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.9649
+As the p-value is greater than the level $\alpha$ = 0.05, we fail to reject the null hypothesis at 5% level of significance. Thus, the effect of factor A is not present. 
+
+The hypotheses to be tested are : 
+$H_{0}$ : effect of factor B is not present vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.0538
+As the p-value is greater than the level $\alpha$ = 0.05, we fail to reject the null hypothesis at 5% level of significance. Thus, the effect of factor B is not present. 
+
+
+Part (c) 
+
+
+
+```{r}
+A = as.factor(data_3$A)
+B = as.factor(data_3$B)
+mod_3_1 = aov(data_3$Y~A+B)
+library(api2lm)
+PostHocTest(mod_3_1,"A",method = "bonferroni", conf.level = 0.90)
+
+
+t.test(data_3[(data_3$B==1),"Y"] - data_3[(data_3$B==2),"Y"],alternative = "two.sided",conf.level = 0.95,method="bonferroni")
+```
+
+Comment : As the estimated values lie inside the confidence intervals for each pair of level of factor A, we fail to reject the null hypothesis and thus, conclude that the the factor level means of A are equal. 
+
+As the estimated value lie inside the confidence interval for the difference of the two levels of factor B, we fail to reject the null hypothesis and thus, conclude that the the factor level means of B are equal.
+
+
+
+Part (d) 
+
+
+
+```{r}
+fit_3 = predict.lm(mod_3_1)
+fit_3[(data_3$A==3) & (data_3$B==2)]
+```
+
+
+
+Part (e) 
+
+
+```{r}
+marginal_means_3 = emmeans(mod_3_1,~A+B)
+marginal_means_3
+```
+
+Conclusion : The estimated variance of $\mu_{32}$ is $0.268^2$ = 0.0718.
+
+
+
+Part (f) 
+
+The 95% confidence interval for $\mu_{32}$ is (16.2,17.9).
+
+
+
+Part (g) 
+
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : the main effects and blocks are additive vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.5228.
+
+
+
+```{r}
+library(asbio)
+tukey.add.test(data_3$Y,data_3$A,data_3$B)
+```
+
+Conclusion : As the p-value is greater than the level $\alpha$ = 0.025, we fail to reject the null hypothesis at 2.5% level of significance. Thus, the two factors in the given experiment are additive.
+
+
+
+PROBLEM 4. 
+
+
+I can not agree with the student's claim that there is no basic difference between the completely randomized design(CRD) and randomized block design(RBD). Though random permutations are used to assign treatments to experimental units for both the designs of experiments, there is a fundamental difference. In CRD, random assignments of treatments to the experimental units takes place without the influence of any other factor, while, in case of RBD, the experimental units are further sub-divided into blocks on the basis of some other factor, which makes the blocks homogeneous and then the treatments are randomly allocated to the blocks. CRD is different from RBD in a sense that as the blocks are homogeneous in case of RBD, it decreases the variability existing in the experimental design. This property of RBD is known as local control, in which the variations due to the factors other than the ones we are studying for are controlled. 
+
+
+
+PROBLEM 5. 
+
+
+Loading the data : 
+
+
+
+```{r}
+data_5 = data.frame(Y = c(73,81,92,76,78,80,75,76,87,74,77,90,76,71,88,73,75,86,68,72,88,64,74,82,65,73,81,62,69,78),i = c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10),j = c(1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3))
+data_5
+```
+
+
+
+Part (a) 
+
+
+
+The blocking variable is introduced in the given experiment to reduce the variability due to certain other factors, which are not our focus of interest.
+
+
+
+Part (b) 
+
+
+```{r}
+mod_5 = aov(Y~i+j, data=data_5)
+res_5 = residuals.lm(mod_5)
+res_5
+fit_5 = predict.lm(mod_5)
+fit_5
+plot(fit_5,res_5,xlab="Fitted",ylab="Residuals")
+abline(0,0,col="red")
+qqnorm(res_5)
+```
+
+Comment : The residuals vs fitted plot shows that the points are scattered randomly around the line y = 0 with almost equal distance from the line, signifying the variability among the groups are equal.
+The normality assumption seems to be violated from the Q-Q plot. 
+
+
+
+Part (c) 
+
+
+```{r}
+interaction.plot(factor(data_5$i),factor(data_5$j),data_5$Y,xlab = "Block",ylab = "Y")
+```
+
+Comment : The no-interaction assumption seems to hold. 
+
+
+
+Part (d) 
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : the main effects and blocks are additive vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.8098.
+
+
+```{r}
+library(asbio)
+tukey.add.test(data_5$Y,data_5$j,data_5$i)
+```
+
+Conclusion : As the p-value is greater than the level $\alpha$ = 0.025, we fail to reject the null hypothesis at 2.5% level of significance. Thus, the block and treatment effects in the given experiment are additive.
+
+
+
+
+Part (e) 
+
+
+```{r}
+anova(lm(Y~i+j,data = data_5))
+```
+
+
+
+Part (f) 
+
+
+```{r}
+barplot(c(mean(fit_5[(data_5$j==1)]),mean(fit_5[(data_5$j==2)]),mean(fit_5[(data_5$j==3)])),names.arg = c("1","2","3"),xlab = "Treatments",ylab = "Estimated means",main = "Barplot of estimated treatment means")
+```
+
+Comment : The estimated treatment means seem to differ substantially. 
+
+
+
+Part (g) 
+
+
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : mean proficiency for the three training methods are equal vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 3.485e-10
+As the p-value is less than the level $\alpha$ = 0.05, we reject the null hypothesis at 5% level of significance. Thus, significant effect of the three training methods is present.
+
+
+
+
+Part (h) 
+
+
+
+```{r}
+i = as.factor(data_5$i)
+j = as.factor(data_5$j)
+mod_5_1 = aov(data_5$Y~i+j)
+
+TukeyHSD(mod_5_1,"j",conf.level = 0.90)
+```
+
+
+
+
+Part (i) 
+
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : mean proficiency for the blocking effects are equal vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 1.358e-05
+As the p-value is less than the level $\alpha$ = 0.05, we reject the null hypothesis at 5% level of significance. Thus, significant effect of the ten blocks is present. 
+
+
+
+
+ 
+
+
+
+
+
+
+
+PROBLEM 6. 
+
+
+
+The student's solution to the problem suggested by the instructor does not seem to be viable in any sense because treatment regression lines with different slopes suggest that the the treatment effects vary across the different groups and thus, using a covariance model that allows for different slopes would surely introduce some bias leading to erroneous inferences about the treatment effects.
+
+
+
+PROBLEM 7. 
+
+
+
+Loading the dataset : 
+
+
+
+```{r}
+Low_prev = c(7.6,8.2,6.8,5.8,6.9,6.6,6.3,7.7,6.0)
+Moderate_prev = c(6.7,8.1,9.4,8.6,7.8,7.7,8.9,7.9,8.3,8.7,7.1,8.4)
+High_prev = c(8.5,9.7,10.1,7.8,9.6,9.5)
+
+Low_new = c(8.2,7.9,7.0,5.7,7.2,7.0,6.5,7.9,6.3)
+Moderate_new = c(8.8,10,10.7,10,9.7,9.1,10.6,9.8,10,10.3,8.9,10)
+High_new = c(11.5,12.2,12.8,11,12.3,12.1)
+
+data_7 = data.frame("Level" = c(rep("Low",length(Low_prev)),rep("Moderate",length(Moderate_prev)),rep("High",length(High_prev))), "Productivity_Improvement" = c(7.6,8.2,6.8,5.8,6.9,6.6,6.3,7.7,6.0,6.7,8.1,9.4,8.6,7.8,7.7,8.9,7.9,8.3,8.7,7.1,8.4,8.5,9.7,10.1,7.8,9.6,9.5), "X" = c(8.2,7.9,7.0,5.7,7.2,7.0,6.5,7.9,6.3,8.8,10,10.7,10,9.7,9.1,10.6,9.8,10,10.3,8.9,10,11.5,12.2,12.8,11,12.3,12.1))
+
+data_7[data_7$Level=="Low","I1"] = 1
+data_7[data_7$Level=="Moderate","I1"] = 0
+data_7[data_7$Level=="High","I1"] = -1
+data_7[data_7$Level=="Low","I2"] = 0
+data_7[data_7$Level=="Moderate","I2"] = 1
+data_7[data_7$Level=="High","I2"] = -1
+
+data_7
+```
+
+
+
+Part (a) 
+
+
+
+```{r}
+mod_7 = aov(Productivity_Improvement~X+Level, data = data_7)
+res_7 = resid(mod_7)
+```
+
+
+
+Part (b) 
+
+
+
+```{r}
+fit_7 = fitted(mod_7)
+plot(fit_7[data_7$Level=="Low"],res_7[data_7$Level=="Low"],xlab="Fitted",ylab="Residuals",main = "Low treatment")
+abline(0,0,col="red")
+plot(fit_7[data_7$Level=="Moderate"],res_7[data_7$Level=="Moderate"],xlab="Fitted",ylab="Residuals",main = "Moderate treatment")
+abline(0,0,col="red")
+plot(fit_7[data_7$Level=="High"],res_7[data_7$Level=="High"],xlab="Fitted",ylab="Residuals",main = "High treatment")
+abline(0,0,col="red")
+qqnorm(res_7)
+```
+
+Comment : The residual vs fitted plots show that the variability among the groups are almost equal. 
+The normal Q-Q plot of the residuals depict normality of the residuals. 
+
+
+
+Part (c) 
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : treatment regression lines have same slope vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.0916
+As the p-value is less than the level $\alpha$ = 0.025, we reject the null hypothesis at 2.5% level of significance
+
+The generalized regression model to be employed is : 
+$Y_{ij}=\mu_{.}+\tau_{1}I_{ij1}+\tau_{2}I_{ij2}+\gamma x_{ij}+\beta_{1}I_{ij1}x_{ij}+\beta_{2}I_{ij2}x_{ij}+\varepsilon_{ij}$ 
+
+
+```{r}
+mod_7_new = aov(Productivity_Improvement~X*Level,data= data_7)
+anova(mod_7_new,mod_7)
+```
+
+Conclusion : The treatment regression lines have same slope.
+
+
+
+Part (d) 
+
+Subpart (i) 
+
+
+```{r}
+
+low_X_avg = mean(data_7$X[1:length(Low_prev)])
+moderate_X_avg = mean(data_7$X[(length(Low_prev)+1):(length(Low_prev)+length(Moderate_prev))])
+high_X_avg = mean(data_7$X[(length(Low_prev)+length(Moderate_prev)+1):(length(Low_prev)+length(Moderate_prev)+length(High_prev))])
+
+
+low_Y_avg = mean(data_7$Productivity_Improvement[1:length(Low_prev)])
+moderate_Y_avg = mean(data_7$Productivity_Improvement[(length(Low_prev)+1):(length(Low_prev)+length(Moderate_prev))])
+high_Y_avg = mean(data_7$Productivity_Improvement[(length(Low_prev)+length(Moderate_prev)+1):(length(Low_prev)+length(Moderate_prev)+length(High_prev))])
+
+
+low_bar = c(low_X_avg,low_Y_avg)
+mod_bar = c(moderate_X_avg,moderate_Y_avg)
+high_bar = c(high_X_avg,high_Y_avg)
+bars = cbind(low_bar,mod_bar,high_bar)
+barplot(bars,beside = TRUE, main = "Barplot")
+```
+
+Comment : There seems to significant effect of research and development expenditure on mean productivity. 
+
+
+
+Subpart (ii) 
+
+
+
+The full regression model is : 
+$Y_{ij}=\mu_{.}+\tau_{1}I_{ij1}+\tau_{2}I_{ij2}+\gamma x_{ij}+\varepsilon_{ij}$
+
+The reduced model is : 
+$Y_{ij}=\mu_{.}+\gamma x_{ij}+\varepsilon_{ij}$ 
+
+
+
+Subpart (iii) 
+
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : treatments do not have effects vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 2.591e-07
+As the p-value is less than the level $\alpha$ = 0.025, we reject the null hypothesis at 2.5% level of significance
+
+
+```{r}
+full_model = lm(Productivity_Improvement~I1+I2+X ,data = data_7)
+reduced_model = lm(Productivity_Improvement~X, data = data_7)
+anova(full_model,reduced_model)
+```
+
+Comment : The treatment have significant effect on the response variable. 
+
+
+
+
+Subpart (iv) 
+
+
+
+```{r}
+anova(mod_7)
+```
+
+Comment : The MSE of the ANCOVA model is substantially larger than the ANOVA model in HW8 PROBLEM 10. 
+Though the p-value changes for the ANCOVA problem, the conclusion about the treatment effects remains the same. 
+
+
+
+
+Subpart (v) 
+
+
+
+```{r}
+library(api2lm)
+predict_adjust(mod_7,data.frame(X=9,Level="Moderate"), interval = "predict", level = 0.95)
+```
+
+
+
+
+Subpart (vi) 
+
+
+
+```{r}
+library(DescTools)
+PostHocTest(mod_7,"Level",method = "scheffe", conf.level = 0.90)
+PostHocTest(mod_7,"Level",method = "bonferroni", conf.level = 0.90)
+```
+
+Comment : The Bonferroni procedure is more efficient for pairwise comparison compared to the Scheffe procedure as it gives tighter intervals. 
+
+
+
+
+
+PROBLEM 8. 
+
+
+
+Part (a) 
+
+
+In a study of absenteeism at a plant, the treatments are the three 8 hour shifts. I think that the fixed effects model is appropriate here because the shifts are specified and shall remain fixed if the experiment is conducted at a future time. 
+
+
+
+Part (b) 
+
+
+
+In a study of employee productivity, the treatments are 10 production employees selected at random from all production employees in a large company. I think that the random effects model is appropriate here because the employees vary from one another without any specific characteristic traits common to all of them. 
+
+
+
+Part (c) 
+
+
+
+In a study of anticipated annual income at retirement, the treatments are the four types of retirement plans available to employees. I think that the fixed effects model is appropriate here because the retirement plans are specified for the given experiment and shall remain fixed if the experiment is conducted at a future time. 
+
+
+
+
+Part (d) 
+
+
+
+
+In a study of tire wear in 18-wheel trucks, the treatments are four tire locations selected at random. I think that the random effects model is appropriate here as the four tire locations are randomly selected without any specified common characteristics. 
+
+
+
+
+
+PROBLEM 9. 
+
+
+
+Loading the dataset : 
+
+
+
+```{r}
+data_9 = read.table("C:/Users/Jayaditya Nath/Downloads/Hw9Pr9Data.txt")
+
+library(dplyr)
+data_9 = data_9%>%
+  rename("Y"="V1","Machine"="V2","Filled"="V3")
+data_9
+```
+
+
+
+
+Part (a) 
+
+
+
+Subpart (1) 
+
+$\mu_{.}$ is the grand mean, i.e, the mean fill for all the machines. 
+
+
+Subpart (2) 
+
+
+${\sigma_{\mu}}^2$ is the variance of the mean fills of each of the machines. 
+
+
+
+Subpart (3) 
+
+
+
+$\sigma^2$ is the variance of the residuals for the given experiment. 
+
+
+
+Subpart (4) 
+
+
+
+$\sigma^{2}(Y_{ij})$ is the variance of all the observations. 
+
+
+
+Part (b) 
+
+
+The hypotheses to be tested are : 
+$H_{0}$ : all machines have same mean fill vs $H_{a}$ : Not $H_{0}$
+The p-value of the test is 0.8121
+As the p-value is greater than the level $\alpha$ = 0.025, we fail to reject the null hypothesis at 2.5% level of significance.
+
+
+```{r}
+library(nlme)
+mod_ran = lme(Y~Machine,random = ~1|Filled,data = data_9)
+summary(mod_ran)
+```
+
+Conclusion : The machines have same mean fill. 
+
+
+
+Part (c) 
+
+
+
+```{r}
+intervals(mod_ran,level = 0.95,which = "fixed")
+```
+
+
+
+Part (d) 
+
+
+
+````{r}
+res_9 = resid(mod_ran)
+mse = sum(res_9^2)/114
+total_mean = mean(data_9$Y)
+mean_1 = mean(data_9$Y[data_9$Machine==1])
+mean_2 = mean(data_9$Y[data_9$Machine==2])
+mean_3 = mean(data_9$Y[data_9$Machine==3])
+mean_4 = mean(data_9$Y[data_9$Machine==4])
+mean_5 = mean(data_9$Y[data_9$Machine==5])
+mean_6 = mean(data_9$Y[data_9$Machine==6])
+mstr = ((sum((mean_1-total_mean)^2 , (mean_2-total_mean)^2 ,(mean_3-total_mean)^2 ,(mean_4-total_mean)^2 , (mean_5-total_mean)^2 , (mean_6-total_mean)^2 )*20)/ 5)
+Low = (((mstr/mse)*(1/qf(0.975,5,114))) - 1 )/n
+Upp = (((mstr/mse)*(1/qf(0.025,5,114))) - 1 )/n
+Low_star = Low/(1+Low)
+Upp_star = Upp/(1+Upp)
+print(paste0("The 95 % confidence interval is : (",Low_star,",",Upp_star,")"))
+```
+
+
+
+
+Part (e) 
+
+
+
+```{r}
+print(paste0("The 95% confidence interval is : (",(114*mse)/qchisq(0.975,114),",",
+             (114*mse)/qchisq(0.025,114),")"))
+```
+
+
+
+Part (f) 
+
+
+
+
+```{r}
+(mstr-mse)/20
+```
+
+
+
+
+Part (g) 
+
+
+
+```{r}
+df = ((20*((mstr-mse)/20)^2)^2)/((mstr^2/5)+(mse^2/(114)))
+l = (df*((mstr-mse)/20)^2)/qchisq(0.975,df)
+u = (df*((mstr-mse)/20)^2)/qchisq(0.025,df)
+print(paste0("The 95 % confidence interval is : (",l,",",u,")"))
+```
+
+
+
+
+
+

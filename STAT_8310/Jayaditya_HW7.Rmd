@@ -1,0 +1,862 @@
+---
+title: "STAT8310_HW7"
+author: "JAYADITYA NATH"
+date: "2023-10-10"
+output: pdf_document
+---
+
+
+PROBLEM 1. 
+
+
+Some factors affecting GPA might be : SAT score, stress level, sleep quality, socio-economic status, gender, parent's education, class attendance, type of school attended, IQ,maturity level, teaching standard, cultural bias.
+
+
+PROBLEM 2. 
+
+
+
+Part (a) 
+
+
+I think that the variable reduction should be done separately for each summer because there might be certain factors which might change drastically from one summer to another and thus, maybe treated as outliers when combined together. This might be an important covariate, which might not be included after the variable reduction process, resulting in a faulty analysis.
+
+
+
+Part (b) 
+
+
+
+The best subsets selection procedure does not choose the variables that are most important in causal sense in determining beach attendance, rather, it chooses the variables which have an effective linear relationship with the response variable thus providing a good fit of the model to the data.
+
+
+PROBLEM 3. 
+
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+```{r}
+data_3_1 = read.table("C:/Users/Jayaditya Nath/Downloads/HW7Pr3Data1.txt")
+library(dplyr)
+data_3_1 = data_3_1%>%
+  rename("X1"="V1","X2"="V2","X3"="V3","X4"="V4","Y"="V5")
+```
+
+Part (a) 
+
+
+```{r}
+stem(data_3_1$X1)
+stem(data_3_1$X2)
+stem(data_3_1$X3)
+stem(data_3_1$X4)
+```
+
+Comment : The stem and leaf plots signify that the predictor variables are not distributed symmetrically.
+
+
+Part (b) 
+
+
+```{r}
+pairs(data_3_1[c("X1","X2","X3","X4")])
+cor(data_3_1[c("X1","X2","X3","X4")])
+```
+
+Comment : X1 and X4 have strong linear relationship with the response variable Y. Also, X1 and X4 are strongly correlated among each other, giving rise to a problem of multicollinearity.
+
+
+
+Part (c) 
+
+
+```{r}
+model_3 = lm(formula = Y~(X1+X2+X3+X4),data = data_3_1)
+summary(model_3)
+
+res_3 = residuals(model_3)
+
+par(mfrow=c(2,3))
+plot(data_3_1$X1,res_3,xlab = "X1", ylab = "Residuals", main = "Residuals vs X1")
+abline(0,0,col="red")
+
+plot(data_3_1$X2,res_3,xlab = "X2", ylab = "Residuals", main = "Residuals vs X2")
+abline(0,0,col="red")
+
+plot(data_3_1$X3,res_3,xlab = "X3", ylab = "Residuals", main = "Residuals vs X3")
+abline(0,0,col="red")
+
+plot(data_3_1$X1,res_3,xlab = "X4", ylab = "Residuals", main = "Residuals vs X4")
+abline(0,0,col="red")
+
+
+qqnorm(res_3, main = "Normal Q-Q plot of the residuals")
+qqline(res_3,col = "red")
+```
+
+Comment : All the residuals vs predictor plots show that the points are randomly distributed along the line y = 0 without any underlying pattern. Thus, all the predictor variables can be retained.
+
+
+
+
+Part (d) 
+
+
+```{r}
+library(leaps)
+four_best_adjR = leaps(x = data_3_1[c("X1","X2","X3","X4")]
+, y = data_3_1$Y, nbest = 1, method = "adjr2")
+four_best_adjR
+
+pos = c()
+for(i in 1:4)
+{
+  pos[i] = match(sort(four_best_adjR$adjr2,decreasing = T)[i],four_best_adjR$adjr2)
+}
+pos
+```
+
+Comment : The four best models according to the adjusted $R^2$ value are as follows : 
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}+\hat{\beta_{4}}X_{4}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}+\hat{\beta_{3}}X_{3}+\hat{\beta_{4}}X_{4}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}$
+
+
+
+
+Part (e) 
+
+
+```{r}
+library(leaps)
+four_best_Cp = leaps(x = data_3_1[c("X1","X2","X3","X4")]
+                       , y = data_3_1$Y, nbest = 1, method = "Cp")
+four_best_Cp
+
+pos = c()
+for(i in 1:4)
+{
+  pos[i] = match(sort(four_best_Cp$Cp)[i],four_best_Cp$Cp)
+}
+pos
+```
+
+Comment : The four best models according to the Mallow's $C_p$ value are as follows : 
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}+\hat{\beta_{4}}X_{4}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}$
+
+$\hat{Y}= \hat{\beta_{0}}+\hat{\beta_{1}}X_{1}+\hat{\beta_{2}}X_{2}+\hat{\beta_{3}}X_{3}+\hat{\beta_{4}}X_{4}$
+
+
+
+
+Part (f) 
+
+
+```{r}
+library(olsrr)
+ols_step_forward_p(model_3,penter = 0.05,prem = 0.10,details = T)
+```
+
+Comment : The best subset of predictor variables including forward stepwise regression only includes $X_1$
+
+
+
+Part (g) 
+
+
+
+The best subset of predictor variables including forward stepwise regression only includes $X_1$, whereas , in part (d), the best subset of predictor variables include ($X_1$,$X_2$,$X_4$)
+
+
+
+
+
+Part (h) 
+
+
+```{r}
+model_3_1 = lm(Y~X1,data = data_3_1)
+
+library(qpcR)
+
+PRESS(model_3_1)
+anova(model_3_1)
+```
+
+Comment : Here, the value of the PRESS statistic is large compared to the SSE, but , always a smaller value of the PRESS statistic is desired. So, the MSE would not be a valid measure of the indicator of the model.
+
+Loading the required dataset in R and renaming the columns : 
+
+
+```{r}
+data_3_2 = read.table("C:/Users/Jayaditya Nath/Downloads/HW7Pr3Data2.txt")
+library(dplyr)
+data_3_2 = data_3_2%>%
+  rename("X1"="V1","X2"="V2","X3"="V3","X4"="V4","Y"="V5")
+```
+
+
+Part (i) 
+
+Sub part (i)
+
+```{r}
+cor(data_3_2)
+cor(data_3_1[c("X1","X2","X3","X4")])
+```
+
+Comment : The two correlation matrices are reasonably similar.
+
+
+
+Sub part (ii) 
+
+
+```{r}
+model_3_1 = lm(Y~X1,data = data_3_1)
+summary(model_3_1)
+anova(model_3_1)
+model_3_2 = lm(Y~X1,data = data_3_2)
+summary(model_3_2)
+anova(model_3_2)
+```
+
+Comment : Comparing the regression model for both the original data and validation data, the estimates seem to reasonably similar in both the cases.
+
+
+Sub part (iii) 
+
+
+```{r} 
+library(Fgmutils)
+mspr(observados = (data_3_2$Y), estimados = predict(model_3_2), nValidacao =  25)
+anova(model_3_1)
+```
+
+Comment : Here, the MSPR is smaller than the MSE of the model building dataset, and we know that the smaller the MSE, the better it is.Thus, here the MSE has a substantial bias problem. This conclusion is consistent with part (h).
+
+
+
+Sub part (iv) 
+
+
+```{r} 
+data_3_3 = data.frame(X1 = c(data_3_1$X1,data_3_2$X1), Y = c(data_3_1$Y,data_3_2$y))
+
+model_3_1 = lm(Y~X1,data = data_3_1)
+summary(model_3_1)
+
+model_3_3 = lm(Y~X1,data = data_3_3)
+summary(model_3_3)
+```
+
+Comment : The standard errors of the coefficients are not appreciably reduced when fitting the combined dataset to the model compared to the model building dataset.
+
+
+
+PROBLEM 4. 
+
+
+
+A very high value of $R^2$ does not necessarily imply that a model is a good fit to the given data in its true sense. We are already aware that $R^2$ is a relative measure of the difference from the total sum of squares and thus, does not provide any information regarding the absolute difference between the actual and predicted values, v.i.z, the error terms. Thus, performing an analysis of the residuals and other diagnostic checks are always advised for measuring the model accuracy.
+
+
+
+
+PROBLEM 5. 
+
+
+
+Identifying extremely influential outlying cases in a dataset adds a whole new dimension to the analysis. We know that in such cases, the errors would be very different from the error terms for the other cases of the dataset. It can also lead to the problem of hidden extrapolation. I think that we can obviously start deleting such observations using leave-one-out approach and check how their deletion is affecting the model dynamics, though, it all depends on the purpose of the analysis.
+
+
+
+PROBLEM 6.
+
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+
+```{r}
+data_6 = read.table("C:/Users/Jayaditya Nath/Downloads/HW6Pr6Data.txt")
+library(dplyr)
+data_6 = data_6%>%
+  rename("Y"="V1","X1"="V2","X2"="V3","X3"="V4")
+```
+
+
+
+Part (a) 
+
+
+```{r}
+model_6 = lm(Y~X1+X2+X3, data=data_6)
+
+rstudent(model_6)
+
+library(olsrr)
+ols_plot_resid_stud_fit(model_6, print_plot = T)
+
+library(car)
+outlierTest(model_6)
+```
+
+The decision rue is : We reject $H_0$ if p-value is less than or equal to 0.05.
+We reject the null hypothesis at 5% level of significance as the p-value is less than 0.05 and thus conclude that the case corresponding to the i-th studentized residual is an outlier.
+
+
+
+
+Part (b) 
+
+
+
+```{r}
+hat_diag = hatvalues(model_6, fullHatMatrix= F)
+hat_diag
+
+case = c()
+for(i in 1:length(hat_diag))
+{
+  if(hat_diag[i]>((2*4)/52))
+  {
+    case[i] = i
+  }
+  else
+  {
+    case[i] = "X"
+  }
+  
+}
+case
+```
+
+Comment : The cases 3, 5, 16, 21, 22, 43, 44 and 48 have outlying X observations.
+
+
+
+Part (c) 
+
+
+
+```{r}
+library(ggplot2)
+ggplot(data = data_6,aes(X1,X2))+
+  geom_point()+
+  geom_point(aes(300000,7.2),col="red")
+
+X = matrix(c(data_6$X1,data_6$X2,data_6$X3),nrow = 52,ncol = 3)
+
+X_new = matrix(c(300000,7.2,0),nrow = 1,ncol = 3)
+
+library(matlib)
+mid = inv((t(X) %*% X))
+h_new_new = X_new %*% mid %*% (t(X_new))
+h_new_new
+
+if(h_new_new<=max(hat_diag))
+{
+  print("No extrapolation required")
+}else
+{
+  print("Extrapolation required")
+}
+```
+
+Comment : The conclusion from the two methods agree that we do not need any extrapolation.
+
+
+
+Part (d) 
+
+
+
+```{r}
+c = c(10,16,22,32,38,40,43,48)
+
+for(i in c)
+{
+  if(abs((dffits(model_6)[i]))>(2*sqrt(4/52)))
+  {
+    print(paste0(i," th case is influential"))
+  }
+
+}
+
+
+for(i in c)
+{
+  if((cooks.distance(model_6)[i])>(qf(0.50,4,48)))
+  {
+    print(paste0(i," th case is influential"))
+  }
+  else
+  {
+    print(paste0(i," th case is not influential"))
+  }
+  
+}
+
+
+for(j in colnames(dfbetas(model_6)))
+{
+  for(i in c)
+  {
+    if((abs(dfbetas(model_6)[i,j]))>(2/sqrt(52)))
+    {
+      print(paste0(i," th case is influential on beta_",j))
+    }
+    else
+    {
+      print(paste0(i," th case is not influential on beta_",j))
+    }
+    
+  }
+}
+```
+
+
+
+Part (e) 
+
+
+```{r}
+data_6_new_1 = data_6[-10,]
+data_6_new_2 = data_6[-16,]
+data_6_new_3 = data_6[-22,]
+data_6_new_4 = data_6[-32,]
+data_6_new_5 = data_6[-38,]
+data_6_new_6 = data_6[-40,]
+data_6_new_7 = data_6[-43,]
+data_6_new_8 = data_6[-48,]
+
+model_6_new_1 = lm(Y~X1+X2+X3,data = data_6_new_1)
+predict(model_6_new_1)
+model_6_new_2 = lm(Y~X1+X2+X3,data = data_6_new_2)
+predict(model_6_new_2)
+model_6_new_3 = lm(Y~X1+X2+X3,data = data_6_new_3)
+predict(model_6_new_3)
+model_6_new_4 = lm(Y~X1+X2+X3,data = data_6_new_4)
+predict(model_6_new_4)
+model_6_new_5 = lm(Y~X1+X2+X3,data = data_6_new_5)
+predict(model_6_new_5)
+model_6_new_6 = lm(Y~X1+X2+X3,data = data_6_new_6)
+predict(model_6_new_6)
+model_6_new_7 = lm(Y~X1+X2+X3,data = data_6_new_7)
+predict(model_6_new_7)
+model_6_new_8 = lm(Y~X1+X2+X3,data = data_6_new_8)
+predict(model_6_new_8)
+
+
+library(MLmetrics)
+
+MAPE(predict(model_6),data_6$Y)
+MAPE(predict(model_6_new_1),data_6_new_1$Y)
+MAPE(predict(model_6_new_2),data_6_new_2$Y)
+MAPE(predict(model_6_new_3),data_6_new_3$Y)
+MAPE(predict(model_6_new_4),data_6_new_4$Y)
+MAPE(predict(model_6_new_5),data_6_new_5$Y)
+MAPE(predict(model_6_new_6),data_6_new_6$Y)
+MAPE(predict(model_6_new_7),data_6_new_7$Y)
+MAPE(predict(model_6_new_8),data_6_new_8$Y)
+```
+
+Comment : Here, we can see that the MAPE values for all the case(i.e, with and without outlying cases) are almost all same and have a very low value, thus indicating that the predicted values are not very different from the observed values in all the cases.
+
+
+
+
+
+Part (f) 
+
+
+
+```{r}
+cooks_d = cooks.distance(model_6)
+cooks_d
+influential = (cooks_d > (3 * mean(cooks_d, na.rm = TRUE)))
+which(influential,TRUE)
+```
+
+
+
+Part (g) 
+
+
+```{r}
+pairs(data.frame(data_6$X1,data_6$X2,data_6$X3))
+cor(data.frame(data_6$X1,data_6$X2,data_6$X3))
+
+vif(model_6)
+```
+
+Comment : Both the scatterplot and correlation matrices show that the correlation among the predictor variables are very less. Also, the three VIF's are close to 1. All these factors jointly signify that there is no serious problem of multicollinearity among the predictor variables.
+
+
+
+
+PROBLEM 7. 
+
+
+
+If the error variances show non-constancy in their error terms does not necessarily mean that the model is completely invalid. It only signifies that the standard errors of the estimates after fitting the regression model are not constant. Thus, calculating the MSE would not be possible as SSE would have different values and thus, no inferential procedure can be used. However, we can use the variance stabilizing transformations on the Y-values and re-perform the regression analysis.
+
+
+
+PROBLEM 8. 
+
+
+Though robust regression is mostly used when a data is contaminated with outlying or influential observations, it is not completely indifferent to such cases. It just mitigates the influence of outlying observations thus, improving the results. However, one needs to study the data and the results of the regression after fitting the regression model, not completely relying on robust regression as often these kind of models have strong assumptions which are not acceptable to the purpose of our analysis.
+
+
+
+
+
+
+PROBLEM 9. 
+
+
+Creating the dataset : 
+
+
+```{r}
+data_9 = data.frame(X = c(200,400,300,400,200,300,300,400,200,400,200,300), Y = c(28,75,37,53,22,58,40,96,46,52,30,69))
+```
+
+
+
+Part (a) 
+
+
+```{r}
+model_9 = lm(Y~X,data = data_9)
+res_9 = residuals(model_9)
+plot(data_9$X,res_9, xlab = "X", ylab = "Residuals", main = "Residuals vs X")
+abline(0,0,col="red")
+```
+
+Comment : The residual vs x plot suggests that the points are scattered randomly without any underlying pattern. Also, the points from a band around the line y = 0 and thus including it as a covariate would improve the model fit. Moreover, none of the points seem to be outliers.
+
+Part (b) 
+
+
+```{r} 
+plot(data_9$X,(res_9)^2, xlab = "X", ylab = "Square of residuals", main = "Square of residuals vs X")
+abline(350,0,col="red")
+```
+
+Comment : This plot shows that the points are not randomly distributed and have any underlying pattern. This shows that the the variance is not constant.
+
+Part (c) 
+
+
+```{r} 
+sq_res_9 = (res_9)^2
+
+model_9_1 = lm(sq_res_9~data_9$X)
+
+res_new = residuals(model_9_1)
+wts = 1/(res_new^2)
+```
+
+
+
+Part (d) 
+
+
+```{r} 
+model_9_2 = lm(Y~X,data = data_9,weights = wts)
+summary(model_9_2)
+
+model_9 = lm(Y~X,data = data_9)
+summary(model_9)
+```
+
+Comment : The weighted estimates are similar to those obtained in part (d)
+
+
+
+
+Part (e) 
+
+
+```{r}
+model_9_2 = lm(Y~X,data = data_9,weights = wts)
+summary(model_9_2)
+
+model_9 = lm(Y~X,data = data_9)
+summary(model_9)
+```
+
+Comment : The estimated standard errors are reduced in the weighted least square regression compared to the ordinary least square regression.
+
+
+
+Part (f) 
+
+
+
+```{r}
+res_new_2 = residuals(model_9_2)
+sq_res_new_2 = (res_new_2)^2
+wts_new = 1/(sq_res_new_2)
+model_9_final = lm(Y~X,data = data_9,weights = wts_new)
+
+summary(model_9_2)
+summary(model_9_final)
+```
+
+Comment : I do not think that there is a substantial change in the model estimates in the second iteration of the weighted least square model when compared to the ordinary least square approach.
+
+
+
+
+
+
+
+
+PROBLEM 10.
+
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+```{r}
+data_10 = read.table("C:/Users/Jayaditya Nath/Downloads/HW7Pr10Data.txt")
+
+library(dplyr)
+data_10 = data_10%>%
+  rename("Y"="V1","X1"="V2","X2"="V3")
+```
+
+
+
+Part (a) 
+
+
+```{r}
+model_10 = lm(Y~X1+X2,data = data_10)
+
+predict(model_10)
+```
+
+
+
+Part (b) 
+
+
+```{r} 
+beta_1_ridge = c(0.451,0.453,0.455,0.460,0.460,0.459,0.458,0.444)
+beta_2_ridge = c(0.561,0.556,0.552,0.526,0.517,0.508,0.504,0.473)
+c = c(0, 0.005, 0.01, 0.05, 0.07, 0.09, 0.10, 0.20)
+
+
+plot(c,beta_1_ridge,type = "l",ylim = c(0.44,0.575),col="red",main = "Trace plot")
+lines(c,beta_2_ridge,col="blue")
+```
+
+Comment : The plot shows that the ridge regression coefficients are substantially different at c = 0.
+
+
+
+Part (c) 
+
+
+
+Here, we see that there are only two covariates and thus $VIF_1$ and $VIF_2$ are calculated based on the coefficients of determination while regressing $X_1$ on $X_2$ and $X_2$ on $X_1$ respectively, which should be the same.
+
+
+
+Part (d)
+
+
+A reasonable value of the biasing constant would be 0.09 because the values of the coefficients kind of become a bit stable near that value with relatively low VIF value and relatively high $R^2$ value.
+
+
+
+
+
+Part (e) 
+
+
+
+```{r}
+beta_1 = (sd(data_10$Y)/sd(data_10$X1))*0.459
+beta_2 = (sd(data_10$Y)/sd(data_10$X2))*0.508
+beta_0 = mean(data_10$Y)-((beta_1*mean(data_10$X1))+(beta_2*mean(data_10$X2)))
+
+data_10["Y_Pred"] = beta_0 + beta_1*(data_10["X1"]) + beta_2*(data_10["X2"])
+
+data_10$Y_Pred
+predict(model_10)
+```
+
+Comment : The fitted values are not significantly different from the predicted values obtained using the ordinary least square model.
+
+
+
+PROBLEM 11. 
+
+
+
+Loading the required dataset in R and renaming the columns as well as adding several rows : 
+
+
+```{r}
+data_11 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr8Data.txt")
+library(dplyr)
+data_11 = data_11%>%
+  rename("X"="V2","Y"="V1")
+
+data_temp = data.frame(X = c(6,5), Y = c(132,166))
+
+data_11_enlarged = rbind(data_11, data_temp)
+```
+
+
+
+Part (a) 
+
+
+```{r}
+model_11_a = lm(Y~X, data = data_11_enlarged)
+summary(model_11_a)
+model_11_previous = lm(Y~X, data = data_11)
+summary(model_11_previous)
+
+par(mfrow=c(2,1))
+plot(data_11$X, data_11$Y, xlab = "X", ylab = "Y", xlim = c(-2,10), main = "Scatter plot of the original data")
+abline(model_11_previous, col = "red")
+plot(data_11_enlarged$X, data_11_enlarged$Y, xlab = "X", ylab = "Y", main = "Scatter plot")
+abline(model_11_a, col = "red")
+```
+
+Comment : After using the enlarged dataset,we see that the estimated value of the intercept changes significantly, but the estimated value of the coefficient of $X_1$ almost remains constant. Also, the enlarged dataset has an extremely influential outlying observation, which reduces the value of $R^2$, thus, decreasing model accuracy. Also, the residual standard error increases.
+
+
+
+Part (b) 
+
+
+```{r}
+res_11_a = residuals(model_11_a)
+
+scaled_res_11_a = res_11_a/mad(res_11_a)
+
+wts = c()
+for(i in 1:length(scaled_res_11_a))
+{
+  if(abs(scaled_res_11_a[i])<=1.345)
+  {
+    wts[i] = 1
+  }
+  else
+  {
+    wts[i] = 1.345/abs(scaled_res_11_a[i])
+  }
+}
+
+wts
+```
+
+Comment : The two new added cases receive the smallest Huber weights because we can see that the function assigning weights is on the basis of $u_{i}$, which is in turn a function of the error term. As these cases have large error terms, inverse function of these error terms would be small, which is how the weights are assigned. 
+
+
+
+Part (c) 
+
+
+```{r}
+model_11_a = lm(Y~X, data = data_11_enlarged)
+summary(model_11_a)
+model_11_c = lm(Y~X, data = data_11_enlarged, weights = wts)
+summary(model_11_c)
+```
+
+Comment : After using the weighted least square model,we see that the estimated value of the intercept changes significantly, but the estimated value of the coefficient of $X_1$ almost remains constant. Also, using the weighted regression approach increases the value of $R^2$, thus, increasing model accuracy. We also observe that the residual standard error also decreases when employing the weighted least square approach.
+
+
+
+Part (d) 
+
+
+```{r} 
+#second iteration of IRLS
+
+resi_1 = residuals(model_11_c)
+scaled_resi_1 = resi_1/mad(resi_1)
+
+wts_1 = c()
+for(i in 1:length(scaled_resi_1))
+{
+  if(abs(scaled_resi_1[i])<=1.345)
+  {
+    wts_1[i] = 1
+  }
+  else
+  {
+    wts_1[i] = 1.345/abs(scaled_resi_1[i])
+  }
+}
+
+mod_1 = lm(Y~X, data = data_11_enlarged, weights = wts_1)
+
+
+
+#Third iteration of IRLS
+
+resi_2 = residuals(mod_1)
+scaled_resi_2 = resi_2/mad(resi_2)
+
+wts_2 = c()
+for(i in 1:length(scaled_resi_2))
+{
+  if(abs(scaled_resi_2[i])<=1.345)
+  {
+    wts_2[i] = 1
+  }
+  else
+  {
+    wts_2[i] = 1.345/abs(scaled_resi_2[i])
+  }
+}
+
+model_11_a = lm(Y~X, data = data_11_enlarged)
+summary(model_11_a)
+mod_final = lm(Y~X, data = data_11_enlarged, weights = wts_2)
+summary(mod_final)
+```
+
+Comment : After using the weighted least square model,we see that the estimated value of the intercept changes significantly, but the estimated value of the coefficient of $X_1$ almost remains constant. Also, using the weighted regression approach increases the value of $R^2$, thus, increasing model accuracy. We also observe that the residual standard error also decreases when employing the weighted least square approach.
+
+
+
+Part (e)
+
+
+
+```{r}
+par(mfrow=c(1,1))
+plot(data_11_enlarged$X, data_11_enlarged$Y, xlab = "X", ylab = "Y", main = "Scatter plot")
+abline(model_11_a, col = "red")
+abline(mod_final, col = "blue")
+```
+
+Comment : From the plot, it does not seem that the fit improves substantially. However, the fit of the model can not be commented upon in this manner as we have to residual analysis and use other diagnostic measures to be sure of how well the fit of the mdeol is.
+
+

@@ -1,0 +1,569 @@
+---
+title: "Untitled"
+author: "JAYADITYA NATH"
+date: "2023-11-07"
+output: pdf_document
+---
+
+PROBLEM 1. 
+
+
+In an experiment to study the effect of location of a product display in drugstores, the manger of one of the drugstores rearranged the displays of other products so as to increase the traffic flow at the experimental display. By doing so, I feel that he introduces both selection and measurement bias simultaneously. Primarily, say that he has 100 drug varieties in his store out of which 15 are most popular, but he has those 15 kinds in very less quantities at the moment. To attract more traffic flow, he keeps them at a position which would attract the attention of buyers, thus, introducing selection bias as the subjects under study are not representing the actual population. Also, the measurement of the traffic flow would not be done in favourable conditions in this case, thus including a measurement bias simultaneously.
+
+
+
+PROBLEM 2.
+
+
+I think that in a study to learn the effect of team size on the volume of communications, a double-blind study can be implemented because it is possible that the information regarding the experiment can be hidden from both the experimental subjects and the evaluators. Also, increasing the number of blinds in an experiment effectively leads to the decrease in any form of bias in different levels by introducing more randomness.
+
+
+
+PROBLEM 3. 
+
+
+In the given situation, the experimental unit is the six containers of salsa because each of the six containers can have 3 different kinds of recipes and they are the ones on which we would like to draw some inferences.
+
+
+
+PROBLEM 4. 
+
+
+Part (a) 
+
+I think that the study is experimental because the researchers are controlling the design of the experimental study by specifying two types of instruction, v.i.z, standard curriculum and computer-based curriculum.
+
+
+Part (b) 
+
+
+The factors are "Instruction" and "School".
+"Instruction" has two levels : standard curriculum and computer-based curriculum.
+"School" has three levels : school 1, school 2 and school 3.
+The different combinations might be : Standard curriculum - School 1, Standard curriculum - School 2, Standard curriculum - School 3, Computer-based curriculum - School 1, Computer-based curriculum - School 2, Computer-based curriculum - School 3
+
+
+
+Part (c) 
+
+
+I think that a completely randomized design(CRD) is being implemented here. 
+
+
+Part (d) 
+
+
+The basic units of study are the students because they are assigned with different treatments and inferences are being drawn on the basis of their test scores. 
+
+
+
+PROBLEM 5. 
+
+
+Part (a) 
+
+
+I feel that the study is observational because the economist did not have any role in manipulating the conditions in which the data has been collected for the firms in consideration. 
+
+
+Part (b) 
+
+
+The study has one factor : average expenditure for research and development in the past 3 years.
+The factor has 3 levels : low, moderate and high.
+Since, there is one factor, there are no factor-level combinations. 
+
+
+Part (c) 
+
+
+Cross-sectional study design has been implemented here.
+
+Part (d) 
+
+
+The basic units of study are the firms because they are having different levels and the final inference is to be drawn upon them. 
+
+
+
+PROBLEM 6. 
+
+
+Part (a) 
+
+
+The given study is clearly experimental because the research is being conducted under manipulated levels of different compounds. 
+
+
+Part (b) 
+
+
+The two factors are : "Compound 1" and "Compound 2".
+The factor levels for each compounds are : low, medium and high.
+The different factor-level combinations are : Compound 1(low) - Compound 2(low), Compound 1(low) - Compound 2(medium), Compound 1(low) - Compound 2(high), Compound 1(medium) - Compound 2(low), Compound 1(medium) - Compound 2(medium), Compound 1(medium) - Compound 2(high), Compound 1(high) - Compound 2(low), Compound 1(high) - Compound 2(medium), Compound 1(high) - Compound 2(high).
+
+
+Part (c) 
+
+
+Randomization can be performed in this study by conducting a single-blind experiment by hiding the details of the experiment from the volunteers of the study. We could also introduce more randomization by performing a double-blind experiment, but, it is not always feasible in the real world to do so.
+
+
+Part (d) 
+
+
+I feel that a completely randomized design(CRD) is being implemented here. 
+
+
+Part (e) 
+
+
+The basic units of study are the volunteers because they are assigned with different compounds and inferences are being drawn on the basis of their hours of relief. 
+
+
+
+
+PROBLEM 7. 
+
+
+Part (a) 
+
+
+If the true regression function was known, it would be possible to determine the mean sales level(which would be a value on the regression curve) by treating it as a different level of the price level which would have a different distribution of the sales level with its mean value on the regression curve just like $\mu_1$, $\mu_2$ and $\mu_3$.
+We would not be able to determine the mean sales volume if we knew the price level and the values of the parameters $\mu_1$, $\mu_2$ and $\mu_3$ because the different price levels have been clearly considered as different populations having different probability distributions for the sales volumes with different means not showing any pattern. Thus, the relation between the dependent and independent variables has not been considered.
+The regression models differs from the ANOVA model in a few aspects : (1) the different price levels leads to probability distributions of mean sales levels having their means on the regression curve, where as, for the ANOVA model the price levels are considered as different populations. (2) no underlying assumption between the dependent and independent variable has been considered in the ANOVA model, which is different from the regression model.
+
+
+
+PROBLEM 8. 
+
+
+
+In the given situation, the main purpose of the researcher is to estimate how different or similar are the expenditures among different families with different number of children living at home. As the result is undecided in case of linear or quadratic regression models, no conclusion regarding the nature of relationship between the independent and dependent variables can be done. SO, the suggestion of a colleague to use an ANOVA model for the given scenario is purposeful as we know that ANOVA does not assume any form of relationship between the independent and dependent variables and also comparing the different group means is a functionality of the ANOVA model.
+
+
+
+
+PROBLEM 9. 
+
+
+Part (a) 
+
+
+```{r}
+num = seq(-3,16,0.001)
+plot(num, dnorm(num, 5.1, 2.8), yaxt = 'n', xaxt = 'n', axes = F, ann = F,col = "black")
+lines(num, dnorm(num, 6.3, 2.8),col = "green")
+lines(num, dnorm(num, 7.9, 2.8),col = "blue")
+lines(num, dnorm(num, 9.5, 2.8), col = "pink")
+mtext(text = c(expression(mu[1]==5.1), expression(mu[2]==6.3), expression(mu[3]==7.9), expression(mu[4]==9.5)), side = 1, at = c(5.1,6.3,7.9,9.5))
+mtext(text = c("G1","G2","G3","G4"),side = 3,at =c(5.1,6.3,7.9,9.5))
+```
+
+
+
+Part (b) 
+
+
+```{r}
+means = c(5.1,6.3,7.9,9.5)
+sigma = 2.8
+sum_mu = 0
+ovr_mean = sum(means)/length(means)
+for(i in 1:length(means))
+{
+  sum_mu = sum_mu + ((means[i]-ovr_mean)^2)
+}
+
+exp_mstr = (sigma)^2 + (100/(length(means)-1)*sum_mu)
+
+exp_mse = (sigma)^2
+
+if((abs(exp_mstr-exp_mse))>100)
+{
+  print(paste0("The expected MSTR value of ",exp_mstr," is substantially larger than the expected MSE value of ",exp_mse,"."))
+}else
+{
+  print(paste0("The expected MSTR value of ",exp_mstr," is not substantially larger than the expected MSE value of ",exp_mse,"."))
+}
+```
+
+Conclusion : As the expected MSTR is substantially large, it makes the value of the F-statistic even larger and thus we reject the null hypothesis in the given problem. Thus, we can conclude that the means among the different groups are significantly different.
+
+
+
+Part (c) 
+
+
+```{r}
+means_new = c(5.1,5.6,9.0,9.5)
+sigma = 2.8
+sum_mu_new = 0
+ovr_mean_new = sum(means_new)/length(means_new)
+for(i in 1:length(means_new))
+{
+  sum_mu_new = sum_mu_new + ((means_new[i]-ovr_mean_new)^2)
+}
+
+exp_mstr_new = (sigma)^2 + (100/(length(means_new)-1)*sum_mu_new)
+
+
+if((abs(exp_mstr_new-exp_mse))>100)
+{
+  print(paste0("The new expected MSTR value of ",exp_mstr_new," is substantially larger than the expected MSTR value of ",exp_mstr,"."))
+}else
+{
+  print(paste0("The new expected MSTR value of ",exp_mstr_new," is not substantially larger than the expected MSTR value of ",exp_mstr,"."))
+}
+```
+
+Conclusion : The expected value of the MSTR is substantially larger compared to part (b) even when the range of the factor level means remains the same because when changing the group means, the overall mean also changes significantly thus changing the difference with each of the group means, thus leading a to a substantial increase in the expected value of MSTR.
+
+
+
+
+PROBLEM 10. 
+
+
+Loading the data in R : 
+
+
+```{r}
+Low = c(7.6,8.2,6.8,5.8,6.9,6.6,6.3,7.7,6.0)
+Moderate = c(6.7,8.1,9.4,8.6,7.8,7.7,8.9,7.9,8.3,8.7,7.1,8.4)
+High = c(8.5,9.7,10.1,7.8,9.6,9.5)
+data_10 = data.frame("Level" = c(rep("Low",length(Low)),rep("Moderate",length(Moderate)),rep("High",length(High))), "Productivity_Improvement" = c(7.6,8.2,6.8,5.8,6.9,6.6,6.3,7.7,6.0,6.7,8.1,9.4,8.6,7.8,7.7,8.9,7.9,8.3,8.7,7.1,8.4,8.5,9.7,10.1,7.8,9.6,9.5))
+data_10
+```
+
+
+
+Part (a) 
+
+
+```{r}
+plot(seq(1,27,1),data_10$Productivity_Improvement,xlab = "i",ylab = "Productivity Improvement",pch = c("L","M","H"),col=c("red","green","blue"),main = "Scatter Plot")
+abline(mean(Low),0,col="red",lty = 2)
+abline(mean(Moderate),0,col="green",lty = 2)
+abline(mean(High),0,col="blue",lty = 2)
+```
+
+Conclusion : The plot clearly displays that the factor level means are different from one another.
+The variability of the observations seem to be approximately similar for all the factor levels. 
+
+
+Part (b) 
+
+
+```{r}
+model_10 = aov(Productivity_Improvement~as.factor(Level),data = data_10)
+fit_10 = fitted(model_10)
+fit_10
+```
+
+
+
+Part (c) 
+
+
+```{r}
+res_10 = residuals(model_10)
+res_10
+sum(res_10)
+```
+
+Conclusion : The residuals do not some to a perfect 0, but are very close to 0.
+
+
+
+Part (d) 
+
+
+```{r}
+anova_table = anova(lm(data_10$Productivity_Improvement~as.factor(data_10$Level)))
+anova_table
+```
+
+
+
+Part (e) 
+
+
+
+The hypotheses are stated as follows : 
+$H_0$ : $\mu_{low}=\mu_{moderate}=\mu_{high}$ vs $H_a$ : not $H_0$
+The decision rule can be stated as : Reject the null hypothesis when the p-value is less than or equal to the level of significance ($\alpha$)
+From the analysis of variance table, we observe that the p-value is strictly less than 0.05, thus, reject the null hypothesis. So, we can conclude at 5% level of significance that the mean factor levels differ from each other significantly. 
+
+
+
+Part (f) 
+
+
+```{r}
+mean_vector=c(7,8,9)
+n = ((((7-mean(mean_vector))^2)*9)+(((8-mean(mean_vector))^2)*12)+(((9-mean(mean_vector))^2)*6))/0.9^2
+power = pf(qf(1-0.05,2,24),df1=2,df2=24,ncp=n,lower.tail = FALSE)
+power
+```
+
+
+
+Part (g) 
+
+
+It seems that the mean productivity improvement increases as a firm progresses from one level to another in the given hierarchy.
+
+
+
+
+PROBLEM 11. 
+
+
+In the given scenario, the usage of Bonferroni confidence interval by the trainee is improper because the Bonferroni confidence intervals are used for those situations where there is a specified hypothesis for testing the data, which is not suggested by the data itself,i.e, without knowing the data beforehand. The problem he would face is that the term which is multiplied to the standard error for computing the confidence intervals is nothing but a higher $\alpha/2$ critical value of the distribution whose mean has been specified in the null hypothesis and in this case he does not have any hypothesis as his inferential procedure is based on analyzing the data(i.e, suggested by the data itself). 
+
+
+
+
+PROBLEM 12. 
+
+
+
+Part (a) 
+
+
+As the sum of coefficients in $L_1$ is :
+(1+3-4) = 0, $L_1$ is a contrast.
+
+As the sum of coefficients in $L_2$ is : (0.3+0.5+0.1+0.1) = 1, which is not equal to 0, $L_2$ is not a contrast.
+
+As the sum of coefficients in $L_3$ is : $\frac{1}{3}+\frac{1}{3}+\frac{1}{3}-1$ = 1 - 1 = 0, $L_3$ is a contrast.
+
+
+
+Part (b) 
+
+
+An unbiased estimator for $L_1$ is:
+
+$\hat{L_1}$ = $\bar{Y_{1}}+3\bar{Y_{2}}-4\bar{Y_{3}}$
+
+An unbiased estimator for $L_3$ is:
+
+$\hat{L_3}$ = $\frac{1}{3}\bar{Y_{1}}+\frac{1}{3}\bar{Y_{2}}+\frac{1}{3}\bar{Y_{3}}-\bar{Y_{4}}$
+
+
+The variance of $\hat{L_1}$ is:
+
+$\frac{\sigma^2}{n}(1^2+3^2+(-4)^2)$ = $\frac{26\sigma^2}{n}$
+
+The variance of $\hat{L_3}$ is:
+
+$\frac{\sigma^2}{n}(\frac{1}{3}^2+\frac{1}{3}^2+\frac{1}{3}^2+(-1)^2)$ =  $\frac{4\sigma^2}{3n}$
+
+
+
+
+PROBLEM 13. 
+
+
+
+Part (a) 
+
+
+```{r}
+barplot(c(mean(fit_10[1:length(Low)]),mean(fit_10[length(Low)+1:length(Moderate)]),mean(fit_10[(length(Low)+length(Moderate)+1):nrow(data_10)])), names.arg = c("Low","Moderate","High"),xlab = "Factor levels",ylab = "Estimated factor level means",main = "Bar Plot")
+```
+
+Conclusion : From the plot, it seems that the mean productivity improvement increases as a firm progresses from one level to another in the given hierarchy.
+
+
+
+Part (b) 
+
+
+```{r}
+tapply(data_10$Productivity_Improvement, data_10$Level, function(x) t.test(x)$conf.int)$High[1:2]
+```
+
+
+
+Part (c) 
+
+
+
+```{r}
+mean_difference = (mean(fit_10[length(Low)+1:length(Moderate)])) - (mean(fit_10[1:length(Low)]))
+n = (1/length(Low))+(1/length(Moderate))
+std_error = (sqrt(0.6401)*sqrt(n))
+t=qt(0.975,24)
+print(paste0("The required confidence interval is : (",mean_difference - (qt(0.975,24)*std_error),",",mean_difference + (qt(0.975,24)*std_error),")"))
+```
+
+Conclusion : The 95% confidence interval can be interpreted as : Working with 100 different samples, 95% of the times the true value of the difference in the population means would fall within the given interval.
+
+
+Part (d) 
+
+
+
+```{r}
+TukeyHSD(model_10,conf.level = 0.90)
+```
+
+Conclusion : 
+
+
+
+Part (e) 
+
+
+
+```{r}
+g = (3*(3-1))/2
+bonferroni_multiplier = qt((1-(.10/(2*g))),24,lower.tail=F)
+bonferroni_multiplier
+
+scheffe_multiplier = sqrt((3-1)*qf(.90, df1=2, df2=24))
+scheffe_multiplier
+
+tukey_multiplier = (1/sqrt(2))*qtukey(.90, 3, 24, nranges = 1, lower.tail = F, log.p = FALSE)
+tukey_multiplier
+```
+
+Conclusion : As out of the three procedures, the absolute value of the Tukey multiplier is the least, it gives the tightest interval of the three and is thus, the most efficient one.
+
+
+
+Part (f)
+
+
+
+```{r}
+library(multcomp)
+Level = as.factor(data_10$Level)
+model_10_1 = aov(data_10$Productivity_Improvement~Level)
+confint(glht(model_10_1, linfct = mcp(Level = c(1/2,1/2,-1)), alternative = "two.sided"),level = 0.95)
+```
+
+Conclusion : The 95% confidence interval can be interpreted as : Working with 100 different samples, 95% of the times the true value of the given contrast would fall within the given interval. 
+
+
+
+Part (g) 
+
+
+```{r}
+t.test(data_10$Productivity_Improvement,mu = 0, alternative = "two.sided",conf.level = 0.95)$conf.int[1:2]
+```
+
+
+
+Part (h) 
+
+
+```{r}
+library(multcomp)
+contrasts <- matrix(c(0, -1, 1, -1, 0, 1, -1, 1, 0, 1/2, 1/2, -1), byrow = TRUE, ncol = 3)
+Level = as.factor(data_10$Level)
+model_10_1 = aov(data_10$Productivity_Improvement~Level)
+confint(glht(model_10_1, linfct = mcp(Level = contrasts), alternative = "two.sided"),level = 0.90)
+```
+
+
+
+
+PROBLEM 14. 
+
+
+Figure I shows that the error terms for the different factor levels are correlated over time.
+Figure II shows that the time related effect decreases the error of residuals of the different factor levels over time.
+Yes, making a diagnosis about the time effect is possible by checking whether the residuals for the different factor levels are correlated over time or not.
+
+
+
+
+PROBLEM 15. 
+
+
+
+According to the proposal of the student, plotting the residuals of the observations on the basis of the overall mean against time or some other factor to get an insight of the appropriateness of the one-way ANOVA model is partly correct. 
+Firstly, to check independence, of the residuals have some kind of relation over time(which can be indicated by some pattern), we can say that the independence assumption of the error terms is violated.
+Secondly, the constancy assumption of the error terms over time would hold if the errors are spread at a constant distance from the y = 0 line.
+Lastly, the normality would not be properly demonstrated by plotting the residuals against time or some other factor because the normality assumption is better verified using the Q-Q plot or some other probability plot.
+
+
+
+PROBLEM 16. 
+
+
+
+Part (a) 
+
+
+```{r}
+plot(as.factor(data_10$Level),res_10,xlab = "Factor Level",ylab="Residuals",main="Boxplot")
+```
+
+Conclusion : Violating the assumptions of ANOVA, we see departures from normality as the boxplots are not symmetric except from the "high" factor level.
+
+
+
+Part (b) 
+
+
+```{r}
+qqnorm(res_10)
+cor(qqnorm(res_10)$x,qqnorm(res_10)$y)
+```
+
+Conclusion : As the correlation coefficient is very high, the normality assumption seems to be reasonable. 
+
+
+
+Part (c) 
+
+
+
+```{r}
+library(car)
+rstudent(model_10)
+outlierTest(model_10,,alpha=0.01)
+```
+
+Conclusion : As the p-value is greater than $\alpha = 0.01$, we fail to reject the null hypothesis at 1% level of significance.
+
+
+
+Part (d) 
+
+
+```{r}
+data_10_1 = data.frame("Level" = c(rep("Low",length(Low)),rep("Moderate",length(Moderate)),rep("High",length(High))), "Productivity_Improvement" = c(7.6,8.2,6.8,5.8,6.9,6.6,6.3,7.7,6.0,6.7,8.1,9.4,8.6,7.8,7.7,8.9,7.9,8.3,8.7,7.1,8.4,8.5,9.7,10.1,7.8,9.6,9.5),"Location" = c("U","E","E","E","E","U","U","U","U","E","E","E","E","U","U","U","U","U","E","E","E","E","U","U","U","U","E"))
+library(ggpubr)
+ggboxplot(data_10_1,x = "Level",y = "Productivity_Improvement",color = "Location")
+```
+
+Conclusion : I feel that the inclusion of location as a second factor to the one-way ANOVA seems as an improvement because it is evident from the plot that as the level of research and development increases, considering location as a factor, the mean productivity of the firms also increases.
+
+
+Part (e) 
+
+
+
+```{r}
+library("onewaytests")
+bf.test(res_10~Level,data_10,alpha=0.05)
+```
+
+Conclusion : As the p-value is greater than the level of significance, we fail to reject the null hypothesis at 5% level of significance. We can conclude at 5% level of significance that the treatment error variances are equal.
+
+
+
+
+
+
+
+
+
+

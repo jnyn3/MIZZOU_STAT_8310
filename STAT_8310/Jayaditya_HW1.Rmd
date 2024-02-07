@@ -1,0 +1,452 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+title: "HOMEWORK_1[STAT 8310]"
+author: "JAYADITYA NATH"
+date: "2023-08-29"
+
+PROBLEM 1.
+
+Let $X_{1},X_{2},.....,X_{10} \overset{i.i.d}{\sim} N(2,4)$
+
+Here  $\mu=2$ and $\sigma^{2}=4$
+Also, let $X ~N(\mu,\sigma^{2}),-\infty<x<\infty$
+
+$\therefore$ mgf of X is
+
+$M_{X}(t)= E(e^{tX})$
+
+$= \int_{-\infty}^{\infty}e^{tx}\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^{2}} dx$
+
+Let, $z=\frac{x-\mu}{\sigma} \implies dx=\sigma dz$ 
+
+$= \frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{t(z\sigma+\mu)}.e^{-\frac{z^{2}}{2}}\sigma dz$
+
+$= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{-\frac{z^{2}}{2}+t\mu+tz\sigma}dz$ 
+
+$= \frac{e^{t\mu}}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{\frac{-z^{2}+2zt\sigma-t^{2}\sigma^{2}}{2}+\frac{t^{2}\sigma^{2}}{2}}dz$
+
+$= \frac{e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{-\frac{(z-t\sigma)^{2}}{2}}dz$ , where $\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{-\frac{(z-t\sigma)^{2}}{2}}dz$ =1 ( $\because$ it is the pdf of $N(t\sigma,1))$
+
+$=e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}$
+
+$\therefore$ $M_{X}(t)= e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}$
+
+(a) 
+Let $Y= 2X_{1}+4$ 
+
+Therefore, 
+
+$M_{Y}(t)=E(e^{tY})$
+
+$= E(e^{2tX_{1}})E(e^{4t})$
+
+$=E(e^{2tX_{1}})e^{4t}$
+
+$=e^{4t}e^{2t\mu+\frac{4t^{2}\sigma^{2}}{2}}$
+
+$=e^{4t+8t^{2}+4t}$
+
+$=e^{8t+\frac{16t^{2}}{2}}$
+
+$\therefore$ Y~N(8,16)
+
+(b)
+Let $Z= X_{1}+X_{2}$
+
+Therefore, 
+
+$M_{Z}(t)=E(e^{tZ})$
+
+$= E(e^{t(X_{1}+X_{2})})$
+
+$= E(e^{tX_{1}})E(e^{tX_{2}})$
+
+$= e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}$
+
+$= e^{2(t\mu+\frac{t^{2}\sigma^{2}}{2})}$
+
+$=e^{4t+4t^{2}}$
+
+$=e^{4t+\frac{8t^{2}}{2}}$
+
+$\therefore$Z~N(4,8)
+
+(c)
+Let $Y= X_{1}-X_{2}$
+
+Therefore, 
+
+$M_{Z}(t)=E(e^{tZ})$
+
+$= E(e^{t(X_{1}-X_{2})})$
+
+$= E(e^{tX_{1}})E(e^{-tX_{2}})$
+
+$= e^{t\mu+\frac{t^{2}\sigma^{2}}{2}}.e^{-t\mu+\frac{t^{2}\sigma^{2}}{2}}$
+
+$=e^{0t+4t^{2}}$
+
+$=e^{0t+\frac{8t^{2}}{2}}$
+
+$\therefore$Y~N(0,8)
+
+(d)
+Let, $Z={\displaystyle \frac{1}{10}\sum_{i=1}^{10}}X_{i}$
+
+$.: M_{Z}(t) = E(e^{(tZ})=E(e^{(X_{1},X_{2},...,X_{10})})$
+
+$= E(e^{\frac{tX_{1}}{10}})E(e^{\frac{tX_{2}}{10}})......E(e^{\frac{tX_{10}}{10}})$
+
+$= e^{\frac{t\mu}{10}+\frac{t^{2}\sigma^{2}}{100*2}}....... e^{\frac{t\mu}{10}+\frac{t^{2}\sigma^{2}}{100*2}}$
+
+$= e^{10(\frac{2t}{10}+\frac{4t^{2}}{200})}$
+
+$=e^{(2t+\frac{4t^{2}}{20})}$ 
+
+$= e^{2t+\frac{2t^{2}}{5.2}}$
+
+$\therefore$Z~N(2,$\frac{2}{5})$
+
+(e)
+
+From part(d) , we know,
+$Z={\displaystyle \bar{X}=\frac{1}{10}\sum_{i=1}^{10}}X_{i} ~ N(2,\frac{2}{5})$
+
+$\therefore$ $P(-1\leq Z\leq1)= P(\frac{-1-2}{\sqrt{\frac{2}{5}}}\leq\frac{Z-2}{\sqrt{\frac{2}{5}}}\leq\frac{1-2}{\sqrt{\frac{2}{5}}})$
+
+$= P(-4.74\leq Y\leq-1.58)$ , where Y~N(0,1)
+
+$= P(Y\leq-1.58)-P(Y<-4.74)$
+
+$=\Phi(-1.58)-\Phi(-4.74)$ , where $\Phi$ is the cdf of N(0,1)
+
+= 0.057 - 0
+
+= 0.057
+
+
+
+PROBLEM 2.
+Ordering the data to obtain order statistic, 
+106, 107, 115, 117, 123, 138, 139
+
+
+The fourth order statistic is $x_{(4)}=117$
+
+The formula to find he pth percentile is :  $y_{(p)}=y_{(a)}+0.b(y_{(a+1)}-y_{(a)}$
+
+Here, p = 0.2 and (n+1)p = 1.6, so, a = 1 and b = 6
+
+$\therefore y_{(1)}=y_{(a)}+0.6(y_{(2)}-y_{(1)})$
+$106+0.6(107-106)$
+$= 106.6$
+
+
+
+
+PROBLEM 3.
+
+I expect the first quartile (Q1), v.i.z., the 25th percentile to be the farthest from median (Q2), v.i.z, the 50th percentile because Q1 is the median of the first half of the data and should be towards the values with low magnitude and thus, should be evidently away from the mid to high values which are comparatively more in number (as Q2 is a measure central tendency). Also, the region between Q1 and Q2 should contain 25% of the data values which must be equal to the percentage of values between the third quartile (Q3), v.i.z, the 75th percentile and the median. Thus, it is more evident that this balance would not be maintained if the first quartile is not farthest from Q2, thus covering more area under the curve.
+
+
+PROBLEM 4.
+
+When the size of the dataset is too small, we would not be able to get the required number of data points to assess the kurtosis of the data. As for instance, if there are 3 data points, no peak would be formed and thus, the measure of peakedness would be invaluable. However, contrary to this sitution, if the dataset has 150 data points, we can easily get an insight of the peakedness of the data
+
+
+
+PROBLEM 5.
+
+Loading the required datasets in R and looking at a summary of the same : 
+
+```{r}
+dat = read.table("C:/Users/Jayaditya Nath/Downloads/HW1Pr5Data1.txt")
+head(dat)
+summary(dat)
+
+datnew = read.table("C:/Users/Jayaditya Nath/Downloads/HW1Pr5Data2.txt")
+head(datnew)
+summary(datnew)
+```
+
+
+Dataset 1 : 
+
+Using normal Q-Q plots to check for normality of individual columns of the dataset : 
+
+
+```{r}
+qqnorm(dat$V1, xlab = "Rankit", main = "Normal Q-Q plot for V1")
+qqline(dat$V1)
+
+qqnorm(dat$V2, xlab = "Rankit", main = "Normal Q-Q plot for V2")
+qqline(dat$V2)
+
+qqnorm(dat$V3, xlab = "Rankit", main = "Normal Q-Q plot for V3")
+qqline(dat$V3)
+
+qqnorm(dat$V4, xlab = "Rankit", main = "Normal Q-Q plot for V4")
+qqline(dat$V4)
+```
+
+
+Using Kolmogorov-Smirnov test to check for normality of individual columns of the dataset : 
+
+```{r}
+ks.test(dat$V1,"pnorm")
+ks.test(dat$V2,"pnorm")
+ks.test(dat$V3,"pnorm")
+ks.test(dat$V4,"pnorm")
+```
+
+
+
+Using Shapiro-Wilk's test to check for normality of individual columns of the dataset : 
+
+```{r}
+shapiro.test(dat$V1)
+shapiro.test(dat$V2)
+shapiro.test(dat$V3)
+shapiro.test(dat$V4)
+```
+
+
+
+Using Anderson-Darling test to check for normality of individual columns of the datasets : 
+
+```{r}
+library(nortest)
+ad.test(dat$V1)
+ad.test(dat$V2)
+ad.test(dat$V3)
+ad.test(dat$V4)
+```
+
+Comment : 
+For column V1, we can conclude both from the graphical method and testing of hypothesis approaches(P-value grater than 0.05) that the data is approximately normal.
+
+For column V2, I could not be sure of whether the data is from a normal population using testing of hypothesis approach because of different conclusions. So, I used the graphical approach and concluded that the data is not from a normal population as most of the points are not on the line.
+
+For column V3, the data is from a normal population because most of the points on the graph are on the line and majority of the testing of hypothesis approaches yield the same conclusion.
+
+For column V4, I could not be sure of whether the data is from a normal population using testing of hypothesis approach because of different conclusions. So, I used the graphical approach and concluded that the data is not from a normal population as most of the points are not on the line.
+
+Dataset 2 : 
+
+Using normal Q-Q plots to check for normality of individual columns of the dataset :
+  
+```{r}
+qqnorm(datnew$V1, xlab = "Rankit", main = "Normal Q-Q plot for V1")
+qqline(datnew$V1)
+
+qqnorm(datnew$V2, xlab = "Rankit", main = "Normal Q-Q plot for V2")
+qqline(datnew$V2)
+
+qqnorm(datnew$V3, xlab = "Rankit", main = "Normal Q-Q plot for V3")
+qqline(datnew$V3)
+
+qqnorm(datnew$V4, xlab = "Rankit", main = "Normal Q-Q plot for V4")
+qqline(datnew$V4)
+```
+
+
+Using Kolmogorov-Smirnov test to check for normality of individual columns of the dataset :
+
+```{r}
+ks.test(datnew$V1,"pnorm")
+ks.test(datnew$V2,"pnorm")
+ks.test(datnew$V3,"pnorm")
+ks.test(datnew$V4,"pnorm")
+```
+
+
+
+Using Shapiro-Wilk's test to check for normality of individual columns of the dataset :
+
+```{r}
+shapiro.test(datnew$V1)
+shapiro.test(datnew$V2)
+shapiro.test(datnew$V3)
+shapiro.test(datnew$V4)
+```
+
+
+
+Using Anderson-Darling test to check for normality of individual columns of the datasets : 
+
+```{r}
+ad.test(datnew$V1)
+ad.test(datnew$V2)
+ad.test(datnew$V3)
+ad.test(datnew$V4)
+```
+
+
+Comment : 
+For column V1, the data is from a normal population because most of the points on the graph are on the line and majority of the testing of hypothesis approaches yield the same conclusion.
+
+For column V2, the data is from a normal population because most of the points on the graph are on the line and majority of the testing of hypothesis approaches yield the same conclusion.
+
+For column V3, the data is from a normal population because most of the points on the graph are on the line and majority of the testing of hypothesis approaches yield the same conclusion.
+
+For column V4, the data is from a normal population because most of the points on the graph are on the line and majority of the testing of hypothesis approaches yield the same conclusion.
+
+I think that for this given dataset, the Kolmogorov-Smirnov test is not at all appropriate as there are several ties in the dataset.
+
+
+PROBLEM 6.
+Loading the required dataset in R : 
+```{r}
+dat1= c(1,8,2,3,2,0,3,8,8,2,2,6,2,3,8,14,3,5,3,3,4,4,1,4,13,2,1,3,14,8)
+head(dat1)
+```
+
+Computing the skewness and kurtosis statistic
+```{r}
+library(moments)
+
+g1=skewness(dat1)
+g1
+b1=kurtosis(dat1)
+b1
+```
+
+Assuming the large sample results are correct(most inaccurately), we compute the 95% confidence intervals of the skewness and kurtosis statistics respectively : 
+```{r}
+c1=g1-(qnorm(0.975)*sqrt((6/length(dat1))))
+c2=g1+(qnorm(0.975)*sqrt((6/length(dat1))))
+sprintf('The confidence interval for the skewness statistic is : (%f,%f)',c1,c2)
+
+```
+
+Thus, we can conclude that we are 95% confident that the population parameter of skewness will be contained between (0.363815,2.116860).
+
+
+```{r}
+ck1=b1-(qnorm(0.975)*sqrt((24/length(dat1))))
+ck2=b1+(qnorm(0.975)*sqrt((24/length(dat1))))
+sprintf('The confidence interval for the kurtosis statistic is : (%f,%f)',ck1,ck2)
+```
+
+Thus, we can conclude that we are 95% confident that the population parameter of kurtosis will be contained between (1.871491,5.377581).
+
+
+PROBLEM 7.
+
+Part (a)
+
+$y_{1},y_{2},.....,y_{n} \sim F(.)$
+
+Again, $\hat{y}_{(i)}\simeq(\frac{i}{n+1})$th sample
+
+and $E(\hat{y}_{(i)}) = F^{-1}(\frac{i}{n+1})$
+
+Considering an exponential distribution, 
+
+cdf of Y is F(y) = $1-e^{-\lambda y}$
+
+Now, let $F^{-1}(\frac{i}{n+1}) = x$
+
+$\implies\frac{i}{n+1} = F(x)$
+
+$\implies\frac{i}{n+1} = 1-e^{-\lambda x}$  [From the definition of CDf]
+
+$\implies1-\frac{i}{n+1} = e^{-\lambda x}$
+
+$\implies e^{-\lambda x} = \frac{n+i-1}{n+1}$
+
+$\implies {-\lambda x} =log_{e}(\frac{n+i-1}{n+1})$
+
+$\implies {\lambda x} =-log_{e}(\frac{n+i-1}{n+1})$
+
+$\implies {\ x}=\frac{1}{\lambda}log_{e}(\frac{n+i-1}{n+1})^{-1}$
+
+$\implies {\ x}=\frac{1}{\lambda}log_{e}(\frac{n+1}{n+i-1})$
+
+$\therefore F^{-1}(\frac{i}{n+1})=\frac{1}{\lambda}log_{e}(\frac{n+1}{n+i-1})$
+
+
+
+Loading the required dataset in R : 
+```{r}
+datn1=c(478,605,626,714,818,1203,1204,1323,2150,2700,2969,3151,3565,3626,3739,4148,4382,4576,6953,6963,7062,7284,7829,8681,9319,12664,17539,23237,26677,32913)
+head(datn1)
+```
+
+
+
+Part (c)
+Constructing exponential probability plot
+```{r}
+library(ReIns)
+ExpQQ(datn1, main = "Exponential Q-Q plot")
+qqline(datn1)
+```
+
+
+Part (d)
+Constructing normal probability plot
+```{r}
+qqnorm(datn1,xlab = "Rankit", main = "Normal Q-Q plot")
+qqline(datn1)
+```
+
+Part(e)
+```{r}
+hist(datn1)
+```
+
+We can very vaguely conclude from the histogram that the data is more likely to come from an exponential distribution rather than a normal distribution as the data is positively skewed and we know that a normal distribution is symmetric, but, also in the normal probability plot, more points are on the line of best fit as compared to the exponential probability plot. So, we cannot strongly conclude anything.
+
+PROBLEM 8.
+
+Loading the required dataset in R :
+```{r}
+d = c(6.10, 6.74, 6.22, 5.65, 6.38, 6.70, 7.00, 6.43, 7.00, 6.70, 6.70, 5.94, 6.28,6.34, 6.62, 6.55, 2.92, 6.10, 6.20, 6.70, 7.00, 6.85, 6.31, 6.26, 6.36, 6.28,6.38, 6.70, 6.62, 7.00, 6.45, 6.31, 2.86, 6.31, 6.09, 6.17, 6.64, 6.45,7.00, 6.18, 6.58, 5.38, 6.34, 7.00, 5.70, 6.65, 6.56, 6.00, 6.70, 6.45)
+head(d)
+```
+
+Checking for normality using : 
+1. Graphical approach : 
+
+```{r}
+qqnorm(d)
+qqline(d)
+```
+
+2.Testing of Hypothesis approach : 
+```{r}
+ks.test(d,"pnorm")
+ad.test(d)
+shapiro.test(d)
+```
+
+
+Comment : From the normal Q-Q plot, we can see that though most of the data points are lying on the line, we cannot consider this data to come from a normal population since the the line does not pass through an angle of 45 degrees. Also, the tests for normality have failed as in each case, the p-values are less than 0.05 and so, we reject normality.
+
+
+Computing the skewness and kurtosis : 
+```{r}
+kurtosis(d)
+skewness(d)
+```
+
+Comment : The kurtosis measure is greater than 3, so the given data is platykurtic and the skewness measure is less than 0, so the given data is negatively skewed.
+
+
+Drawing the histogram and the boxplot to highlight several aspects of the data : 
+```{r}
+hist(d)
+boxplot(d)
+```
+
+Comment : 
+From the histogram, we can observe that the data is left skewed.
+From the boxplot, we also get the same evidence as the lower whisker is larger compared to the upper whisker and the first quartile Q1 is farthest from the median. We can also observe that there are a couple of outliers in our dataset, which we can ignore. The median(measure of central tendancy) is 6.3.  
+
+
+

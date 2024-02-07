@@ -1,0 +1,558 @@
+---
+title: "STAT_8310_HW2"
+author: "JAYADITYA NATH"
+date: "2023-09-08"
+output: pdf_document
+---
+
+QUESTION 1.
+
+Loading the dataset
+
+```{r}
+dat1 = c(1.48,1.26,1.52,1.56,1.48,1.46,1.30,1.28,1.43,1.43,1.55,1.57,1.51,1.53,1.68,1.37,1.47,1.61,1.49,1.43,1.64,1.51,1.60,1.65,1.60,1.64,1.51,1.51,1.53,1.74)
+dat1
+```
+
+Part (a)
+Checking the normality assumption : 
+```{r}
+qqnorm(dat1)
+qqline(dat1)
+
+hist(dat1)
+
+
+library(nortest)
+
+ad.test(dat1)
+```
+
+Conclusion : From the normal Q-Q plot and the histogram, we can assume that the data is normal as in the Q-Q plot, most of the points lie on the line, but, we cannot be sure since, the line is not x=y.
+Thus, we perform the Anderson-Darling test, which confirms that the data is normal.
+
+
+Part (b)
+
+Since the population variance $\sigma^{2}$ is not given, we approximate it with the sample variance $s^{2}$
+```{r}
+var(dat1)
+```
+
+Part (c)
+
+90% confidence interval of $\sigma^{2}$ is computed as follows : 
+
+```{r}
+library(DescTools)
+
+VarCI(dat1,conf.level = 0.90,sides = "two.sided")
+```
+
+Part (d)
+
+90% confidence interval of $\sigma$ is computed as follows :
+
+```{r}
+library(misty)
+
+ci.sd(dat1,conf.level = 0.90)
+```
+
+
+Part (e)
+
+90% confidence interval of $\mu$ is computed as follows :
+
+```{r}
+t.test(dat1,alternative = "two.sided",conf.level = 0.90)
+```
+
+Part (f)
+
+Calculating the sample size on the basis of the given information : 
+
+```{r}
+beta_1 = 0.05
+alpha_1 = 0.05
+
+a1=qt(alpha_1, df = (length(dat1)-1),lower.tail = FALSE)
+b1=qt(beta_1, df = (length(dat1)-1),lower.tail = FALSE)
+
+n1 = ((a1+b1)*(sd(dat1))/0.03)^2
+round(n1)
+```
+
+The sample size should be greater than or equal to 166 as it is mentioned that the half width should be at most 0.03.
+
+
+Part (g)
+
+We perform the test for one-sample mean and infer on the basis of the calculated p value : 
+
+```{r}
+t.test(dat1,mu=1.5,conf.level = 0.95,alternative = "greater")
+```
+
+Conclusion : We find that the p-value is 0.2945 which is greater than the level of significance $\alpha = 0.05$. Thus, we fail to reject the null hypothesis and conclude that the true population mean is equal to 1.5
+
+Part (h)
+
+Here, we compute the power function of the test as follows : 
+
+First, we compute the value of sample standard deviation of the data : 
+```{r}
+sd(dat1)
+```
+
+
+$P\left(\frac{\bar{x}-\mu_{0}}{s/\sqrt{n}}\geqslant t_{\alpha;n-1}\mid H_{A}\right)$
+
+
+$=P\left(\frac{\bar{x}-\mu_{1}+\mu_{1}-\mu_{0}}{s/\sqrt{n}}\geqslant t_{\alpha;n-1}\right)$
+
+
+$=P\left(\frac{\bar{x}-\mu_{1}}{s/\sqrt{n}}\geqslant t_{0.05;29}-\left(\frac{\mu_{1}-\mu_{0}}{s/\sqrt{n}}\right)\right)$
+
+
+$=P\left(T_{A}\geqslant1.699127-\frac{\left(\mu_{1}-1.5\right)}{\frac{0.113646}{\sqrt{30}}}\right)$
+
+
+$=P\left(T_{A}\geqslant1.699127-\frac{\left(\mu_{1}-1.5\right)}{0.02075}\right)$
+
+
+Here, we plot the power curve for the given testing of hypothesis for different values of $\mu$
+
+```{r}
+mean_seq = seq(0.5,3.4,by = 0.1)
+obj = 1.699127-((mean_seq-1.5)/0.02075)
+x = pt(obj,df=29,lower.tail = FALSE)
+plot(mean_seq,x,type = "l",ylab = "Power", main = "Power Curve of the mean under Alternative hypothesis")
+```
+
+
+Now, we find the power of the given testing of hypothesis at $\mu = 1.53$
+
+```{r}
+pt((1.699127-((1.53-1.5)/0.02075)),df =29,lower.tail = FALSE)
+```
+
+
+
+
+PROBLEM 2.
+
+Loading the datset in R
+
+```{r}
+dat2 = c(2.0,1.7,2.6,1.5,1.4,2.1,3.0,2.5,1.8,1.4)
+dat2
+```
+
+
+Part (a)
+
+Here, we compute the mean, variance and standard deviation of the given data : 
+
+```{r}
+mean(dat2)
+var(dat2)
+sd(dat2)
+```
+
+
+Part (b)
+
+Here, we check for normality assumption of the given dataset : 
+
+```{r}
+qqnorm(dat2)
+qqline(dat2)
+
+hist(dat2)
+
+library(nortest)
+ad.test(dat2)
+```
+
+Conclusion : From the graphical methods, I am not being able to draw any conclusion as there is a lot of ambiguity between the two. So, to reach a conclusion, I performed the Anderson-Darling test and found out that we can reasonably assume the sample to be from a normal population.
+
+
+Part (c)
+
+Here, we find the 90% confidence interval of the average drilling distance : 
+
+```{r}
+t.test(dat2,alternative = "two.sided",conf.level=0.90)
+```
+
+
+Part (d)
+
+Calculating the sample size on the basis of the given information :
+
+```{r}
+beta_2 = 0.20
+alpha_2 = 0.10
+
+a2=qnorm(alpha_2/2,lower.tail = FALSE)
+b2=qnorm(beta_2,lower.tail = FALSE)
+
+n2 = ((a2+b2)*(sd(dat2))/0.2)^2
+round(n2)
+```
+
+The sample size should be greater than or equal to 47 as it is mentioned that the half width should be at most 0.2.
+
+
+Part (e)
+
+We perform the test for one-sample mean and infer on the basis of the calculated p value : 
+
+```{r}
+t.test(dat2,mu = 2,alternative = "two.sided",conf.level=0.90)
+```
+
+
+Conclusion : We find that the p-value is 1 which is greater than the level of significance $\alpha = 0.10$. Thus, we fail to reject the null hypothesis and conclude that the true population mean is equal to 2
+
+
+Part (f)
+
+
+Since the test is a two-sided test, we replace $\alpha$ and  by  $1-\alpha/2$ and $\beta$ by $1-\beta$ for considering the power of the test and compute the sample size as follows using effect size calculated by $\frac{\mu-\mu_{0}}{s}$ : 
+
+```{r}
+beta_2 = 0.20
+alpha_2 = 0.10
+
+a2=qnorm(1-(alpha_2/2),lower.tail = FALSE)
+b2=qnorm(1-beta_2, lower.tail = FALSE)
+n2 = ((a2+b2)/0.2)^2
+round(n2)
+```
+
+
+Part (g)
+
+We can observe that the values of the sample sizes from parts (d) and (f) are different because we compute one using the confidence interval approach and the other using the power of the testing of hypothesis approach.
+
+
+
+
+PROBLEM 3.
+
+Loading the dataset in R : 
+
+```{r}
+dat3 = c(11.6,14.7,12.9,13.3,13.2,13.1,14.2,15.1,12.5,15.3,13.3,13.4,13.0,13.8,12.3)
+dat3
+```
+
+Part (a)
+
+The appropriate  null and alternative hypothesis used to verify the given claim is : 
+
+$H_{0}:\mu=14$ vs $H_{A}:\mu<14$ , where $\mu$ is the population mean
+
+
+Part (b)
+
+```{r}
+qqnorm(dat3)
+qqline(dat3)
+
+hist(dat3)
+
+
+ad.test(dat3)
+```
+
+Conclusion : Though the histogram gives a hint of normality, we can not be sure of normality from the normal Q-Q plot. Thus, we perform the Anderson-Darling test to strengthen our claim of normality and the results of the tes comply with the same.
+
+
+Part (c)
+
+Now, we perform a one sample t-test for testing the mean : 
+
+```{r}
+t.test(dat3,mu = 14,alternative = "less",conf.level=0.95)
+```
+
+Conclusion : We find that the p-value is 0.02788 which is less than the level of significance $\alpha = 0.05$. Thus, we reject the null hypothesis and conclude that the true population mean is less than 14
+
+
+Now, as we are rejecting the null hypothesis, we are subject to type-I error. As we assume the confidence level to be 95% in our testing of hypothesis, we thus can say that the value of $\alpha$ which is 0.05 is the probability of type-I error by definition.
+
+
+
+PROBLEM 4.
+
+Loading the dataset in R ; 
+
+```{r}
+dat4 = c(65,73,72,71,68,74,74,66,68,69,70,66,72,67,73,69,70,73,70,74)
+dat4
+```
+
+
+Part (a)
+
+Here, we set up the testing of hypothesis to test the given claim : 
+
+$H_{0}:\tilde{\mu}=68$ vs $H_{A}:\tilde{\mu}>68$ , where $\tilde{\mu}$ is the population median
+
+
+Part (b)
+
+For performing testing of hypothesis for population median, the non-parametric Sign test is suitable, but , we can use a non-parametric test only when the distribution of the population is unknown or we cannot assume normality. So, we check for normality : 
+
+```{r}
+qqnorm(dat4)
+qqline(dat4)
+
+hist(dat4)
+```
+
+
+Conclusion : From the graphical representations, it is very clear that the data is completely non-normal as the histogram is not at all symmetric.
+
+
+Part (c) : 
+
+We perform the testing of hypothesis procedure to draw an inference based on the given claim : 
+
+
+```{r}
+library("DescTools")
+SignTest(dat4,alternative = "greater",mu = 68,conf.level = 0.95)
+```
+
+Conclusion : We find that the p-value is 0.01544 which is less than the level of significance $\alpha = 0.05$. Thus, we reject the null hypothesis and conclude that the true population median is greater than 68
+
+
+
+PROBLEM 5.
+
+
+Loading the dataset in R : 
+
+```{r}
+te_rats = c(3.4,2.4,1.9,2.6,2.8,3.0)
+c_rats = c(1.6,1.8,1.4,1.9,2.2,2.0)
+te_rats
+c_rats
+```
+
+
+Part (a)
+
+95% confidence interval for the difference in mean dopamine concentrations for the two groups is computed as follows : 
+
+```{r}
+t.test(te_rats,c_rats,alternative = "two.sided",conf.level=0.95)
+```
+
+The confidence interval for the difference of means is (0.3094637,1.4238696)
+
+Also, as the p-value is less than the significance level, we reject the null hypothesis and can conclude that the there is difference in mean concentration of dopamines for exposed and unexposed rats, which in turn concludes that there is a significant effect of Toluene.
+
+
+Part (b)
+
+
+Here, I use the non-parametric sign test : 
+
+
+```{r}
+SignTest(te_rats,c_rats,alternative = "two.sided",conf.level = 0.95)
+```
+
+Conclusion : As the p-value is less than $\alpha$, we reject the null hypothesis and thus conclude that there is a significant effect of Toluene in the brains of rats.
+
+
+Part (c)
+
+From the parts (a) and (b), I reach a common conclusion that there is a significant effect of toluene on the basis of diiferent dopamine concentrations in the striatum region of the brain in rats.
+
+
+Part (d)
+
+```{r}
+delta = 0.1
+alpha_5 = 0.01
+beta_5 = 0.1
+
+pooled_var = (((length(te_rats)-1)*var(te_rats))+((length(c_rats)-1)*var(c_rats)))/(length(te_rats)+length(c_rats)-2)
+
+df = length(te_rats)+length(c_rats)-2
+
+a_5 = qt((alpha_5/2),df,lower.tail = FALSE)
+b_5 = qt(beta_5,df,lower.tail = FALSE)
+
+n_5 = (((a_5 + b_5)*sqrt(pooled_var))/delta)^2
+round(n_5)
+
+```
+
+Thus, the required sample size is 358. Here, I have assumed that the population variances of the two population of rats are equal and have thus used pooled variance in my calculations and the degrees of freedom while calculating the t-critical values is n1+n2-2.
+
+
+
+
+PROBLEM 6.
+
+
+Loading the dataset in R : 
+
+```{r}
+sp_a = c(3.2,2.7,3.0,2.7,1.7,3.3,2.7,2.6,2.9,3.3)
+sp_b = c(2.8,2.7,2.0,3.0,2.1,4.0,1.5,2.2,2.7,2.5)
+sp_a
+sp_b
+```
+
+
+Part (a)
+
+Here, I test for the equality of mean heights of the two species of trees : 
+
+```{r}
+t.test(sp_a,sp_b,alternative = "two.sided",var.equal = TRUE)
+```
+
+Conclusion : Here, the p-value of the given test is 0.3341, which is greater than the level of significance = 0.05. Thus, we fail to reject the null hypothesis at 5% level of significance and conclude that the mean height of the two species of trees are equal.
+
+
+Part (b)
+
+Here, I use the non-parametric sign test for comapring the equality of the median height of the two species of trees : 
+
+```{r}
+SignTest(sp_a,sp_b,alternative = "two.sided")
+```
+
+Conclusion : Here, the p-value of the given test is 0.5078, which is greater than the level of significance = 0.021. Thus, we fail to reject the null hypothesis at 2.1% level of significance and conclude that the median height of the two species of trees are equal.
+
+
+Part(c)
+
+```{r}
+df_6 = length(sp_a)+length(sp_b)-2
+a_6 = qt((0.05/2),df_6,lower.tail = FALSE)
+b_6 = qt(0.1,df_6,lower.tail = FALSE)
+
+pooled_var_6 = (((length(sp_a)-1)*var(sp_a))+((length(sp_b)-1)*var(sp_b)))/(length(sp_a)+length(sp_b)-2)
+pooled_var_6
+
+n_6 = (((a_6 + b_6)*sqrt(pooled_var_6))/0.04)^2
+round(n_6)
+```
+
+Thus, the required sample size is 2508. Here, I have assumed that the population variances of the two population of trees are equal and have thus used pooled variance in my calculations and the degrees of freedom while calculating the t-critical values is n1+n2-2.
+
+
+Part (d)
+
+
+For the given problem, we have assumed that the selection of locations is completely random and does not matter for the inference being drawn. However, if the locations of the trees mattered, it would be a 2_way analysis of variance problems with two affecting factors, v.i.z, tree species and planting location.
+
+
+PROBLEM 7.
+
+Loading the dataset in R : 
+
+```{r}
+unseed = c(203,830,372,346,321,244,163,148,95,87,81,69,47,41,37,29,29,26,26,24,23,17,12,5,5,1)
+seed = c(2746,1698,1656,978,703,489,430,334,303,275,275,255,243,201,199,130,119,118,115,92,41,33,31,18,8,4)
+unseed
+seed
+```
+
+Making logarithmic transformation on the data : 
+
+```{r}
+unseed_log = log(unseed)
+seed_log = log(seed)
+
+unseed_log
+seed_log
+```
+
+
+Part (a)
+
+Making normal plots for both the raw and log-transformed data : 
+
+```{r}
+qqnorm(unseed,main = "Normal Q-Q plot for unseed")
+qqline(unseed)
+
+qqnorm(seed,main = "Normal Q-Q plot for seed")
+qqline(seed)
+
+qqnorm(unseed_log,main = "Normal Q-Q plot for unseed_log")
+qqline(unseed_log)
+
+qqnorm(seed_log,main = "Normal Q-Q plot for seed_log")
+qqline(seed_log)
+
+hist(unseed)
+hist(seed)
+hist(unseed_log)
+hist(seed_log)
+```
+
+Conclusion : We can clearly observe from the normal Q-Q plots that after the logarithmic transfromation of the raw data, the data becomes reasonably normal
+
+
+```{r}
+var(unseed)
+var(unseed_log)
+var(seed)
+var(seed_log)
+
+library(moments)
+skewness(unseed)
+skewness(unseed_log)
+skewness(seed)
+skewness(seed_log)
+```
+
+
+We also observe that the variance of the raw data is reduced as well as  the skewness of the data is near to zero, almost attaining symmetry, after the transformation. So, we can conclude that for the given dataset it is better to work with the log-transformed data rather than the raw data.
+
+
+Part (b)
+
+Here, I perform a parametric F-test and a non-parametric Fligner-Killeen test for comparison of variances between the two groups : 
+
+```{r}
+var.test(unseed_log,seed_log,alternative = "two.sided")
+
+fligner.test(unseed_log,seed_log)
+```
+
+Conclusion : In both the tests, we can observe that the p-value is less than the required level of significance, thus failing to reject the null hypothesis. So, we can conclude that the considered populations have equal variances.
+
+
+Part (c)
+
+Performing a t-test for checking the equality of means of the two populations assuming equality of variances : 
+
+```{r}
+t.test(unseed_log,seed_log,alternative = "two.sided",conf.level = 0.95)
+```
+
+Conclusion : Here, the p-value of the given test is 0.007585, which is less than the level of significance = 0.05. Thus, we reject the null hypothesis at 5% level of significance and conclude that the mean measure of rainfall from the two species of clouds are not equal.
+
+
+Part (d)
+
+Here, I use the 2-sample sign test for comparing the equality of the two cloud populations : 
+
+```{r}
+SignTest(unseed,seed,alternative = "two.sided",conf.level = 0.95)
+```
+
+Conclusion : Here, the p-value of the given test is 2.98e-08, which is less than the level of significance = 0.021. Thus, we reject the null hypothesis at 2.1% level of significance and conclude that the median rainfall distribution from the two species of clouds are not equal.

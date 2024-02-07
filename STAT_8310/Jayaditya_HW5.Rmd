@@ -1,0 +1,415 @@
+---
+title: "STAT8310_HW5"
+author: "JAYADITYA NATH"
+date: "2023-09-29"
+output: pdf_document
+---
+
+PROBLEM 1.
+
+
+Loading the dataset in R and renaming the columns of the data : 
+
+
+```{r}
+dat = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr1Data.txt")
+dat_1 = data.frame(dat)
+library(dplyr)
+dat_1 = dat_1 %>%
+  rename("Y" = "V1","X" = "V2","X1" = "V3","X2" = "V4")
+```
+
+
+Part (a)
+
+```{r}
+boxplot(dat_1$X,main = "Boxplotof the ACT score")
+```
+
+Comments : The median ACT score is 25 and they are spread over a range of 15 to 35. Also, the median is closer to the upper quartile, which signifies that the ACT scores are negatively skewed.
+
+Part (b)
+
+Fitting a regression model and getting the residual values : 
+
+```{r}
+mod_1 = lm(Y~X, dat_1)
+summary(mod_1)
+fit_1 = predict(mod_1)
+dat_1["residuals"] = residuals(mod_1)
+plot(fit_1,dat_1$residuals,xlab = "Fitted values", ylab = "Residuals", main = "Residuals vs fit plot")
+abline(0,0, col = "red")
+```
+
+Comment : (i) The residual values are distributed randomly along the line y = 0, thus indicating that the assumption of linear relationship among the x and y-values is reasonable.
+(ii) The residuals roughly form a band around the line y = 0, which implies that the error variances are more or less equal.
+(iii) One residual value quite well stands out from the other residual values, indicating the presence of outlier.
+Thus, I do not see any deviation from the normal error regression model.
+
+Part (c) 
+
+```{r}
+qqnorm(dat_1$residuals, main = "Normal probability plot of residuals")
+qqline(dat_1$residuals,col = "red")
+
+a = qqnorm(dat_1$residuals, plot = F)
+cor(a$x,a$y)
+
+shapiro.test(dat_1$residuals)
+
+
+hist(dat_1$residuals,xlab = "Residuals",main = "Histogram of residuals")
+```
+
+Result : The correlation coefficient between the ordered residuals and their expected values under normality is +0.9744497
+
+Comment : Though the normal probability plot of the residuals support the assumption of normality, the histogram and the Shapiro-Wilk test reject the normality assumption at 5% level of significance.
+
+
+Part (d) 
+
+
+Dividing the data into two groups on the basis of X<26 and X>=26 and perfroming the Brown-Forsythe test : 
+
+```{r}
+dat_1["Group"] = ifelse(dat_1$X<26,"G1","G2")
+
+library(onewaytests)
+
+bf.test(residuals~Group,dat_1,alpha = 0.01)
+```
+
+The decision rule used for the given test is that we reject the null hypothesis at 1% level of significance if the p-value is less than or equal to $\alpha$.
+
+Conclusion : As the p-value is greater than the level of significance, we reject the null hypothesis at 1% level of significance. Thus, we can conclude that the assumption of equal error variance can be validated and is similar to what conclude in part (b).
+
+Part (e) 
+
+```{r}
+plot(dat_1$X1,dat_1$residuals,xlab = "X2",ylab = "Residuals", main = "Residuals vs Intelligence test score")
+abline(0,0,col = "red")
+
+plot(dat_1$X2,dat_1$residuals,xlab = "X3",ylab = "Residuals", main = "Residuals vs Rank percentile")
+abline(0,0,col = "red")
+```
+
+Comment : The Intelligence test score is not at all a good predictor which would improve the model because of the underlying pattern which it displays in the graph and thus would not be able to correctly interpret the remaining variability of the response variable. However, the Rank percentile might be a good predictor which would help explain the remaining variability in the response variable because it is distributed randomly around the y = 0 line almost forming a band around it. 
+
+
+PROBLEM 2. 
+
+
+Loading the data in R and renaming the columns : 
+
+
+```{r}
+dat2 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr2Data.txt")
+dat_2 = data.frame(dat2)
+dat_2 = dat_2 %>%
+  rename("X" = "V1","Y" = "V2")
+```
+
+
+Part (a) 
+
+Fitting the model and finding the  residuals : 
+
+
+```{r}
+mod_2 = lm(Y~X,dat_2)
+summary(mod_2)
+dat_2["residuals"] = residuals(mod_2)
+dat_2
+plot(dat_2$X,dat_2$residuals,xlab = "X",ylab = "Residuals", main = "Residuals vs Number of rooms in the home")
+abline(0,0,col = "red")
+```
+
+Comment : I think the first problem is that the number of data points are too low to make any conclusion. Also, if we ignore that fact, the data seems to be distributed randomly around the line y = 0, but, they do not form any band around the line and few points seem to be potential outliers.
+
+
+Part (b)
+
+```{r}
+dat_2["X_New1"] = exp(dat_2["X"])
+plot(dat_2$X_New1,dat_2$residuals,xlab = "X",ylab = "Residuals", main = "Exponential transfromation")
+abline(0,0,col = "red")
+
+dat_2["X_New2"] = (dat_2["X"])^2
+plot(dat_2$X_New2,dat_2$residuals,xlab = "X",ylab = "Residuals", main = "Square transfromation")
+abline(0,0,col = "red")
+```
+
+Comment : I do not think that any kind of transformation would mitigate the issue because the number of data points are too less to make any kind of conclusion regarding the randomness, equal error or outliers.
+
+
+
+PROBLEM 3. 
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+```{r}
+dat3 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr3Data.txt")
+dat_3 = data.frame(dat3)
+dat_3 = dat_3 %>%
+  rename("X" = "V1","Y" = "V2")
+```
+
+
+Part (a) 
+
+
+Fitting the model and finding the semistudentized residuals : 
+
+
+```{r}
+mod_3 = lm(Y~X,dat_3)
+anova(mod_3)
+dat_3["Residuals"] = residuals(mod_3)
+dat_3["Semi_studentized_residuals"] = (dat_3["Residuals"] - mean(dat_3$Residuals))/(sqrt(2.0467))
+dat_3
+
+plot(predict(mod_3,dat_3),dat_3$Semi_studentized_residuals, xlab = "Fitted values", ylab = "Semi-studentized residuals", main = "Semi-studentized residuals vs Fit")
+abline(0,0,col = "red")
+```
+
+Comment : The plot suggests that the residuals are randomly distributed, validating the assumption of linearity. The points also kind of form a band around the line y = 0. Although, there are two outliers, which can be ignored.
+
+
+Part (b) 
+
+```{r}
+plot(predict(mod_3,dat_3),dat_3$Semi_studentized_residuals, xlab = "Fitted values", ylab = "Semi-studentized residuals", main = "Semi-studentized residuals vs Fit")
+abline(0,0,col = "red")
+abline(1,0,col = "blue")
+abline(-1,0,col = "blue")
+```
+
+Comment : 3 semi-studentized residuals can be seen outside the $\pm$ 1 standard deviation range.
+If the normality assumption is valid, we can expect approximately 32%, i.e, 4 of the data points to be outside the $\pm$ 1 standard deviation range.
+
+
+
+
+
+PROBLEM 4. 
+
+
+Loading the dataset in R and renaming the columns : 
+
+```{r}
+dat4 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr4Data.txt")
+dat_4 = data.frame(dat4)
+dat_4 = dat_4 %>%
+  rename("X" = "V1","Residuals" = "V2")
+```
+
+
+
+Part (a) 
+
+Fitting the regression model and finding the residual values : 
+
+
+```{r}
+plot(dat_4$X,dat_4$Residuals, xlab = "X", ylab = "Residuals")
+abline(0,0,col = "red")
+```
+
+Conclusion : The log-dose levels can not be considered as a good predictor which would improve the model because though it displays a random distribution, the error seem to be having different variance and also there are outliers. Thus, it would not be able to correctly interpret the remaining variability of the response variable.
+
+
+Part (b) 
+
+
+Here, we divide the data into 3 groups 0,-1 and 1 and perform the Breusch-Pagan test : 
+
+
+```{r}
+for(i in 1:9)
+{
+  if(dat_4[i,"X"]==1)
+  {
+    dat_4[i,"Group"] = "G3"
+  }
+  else if(dat_4[i,"X"]==0)
+  {
+    dat_4[i,"Group"] = "G2"
+  }
+  else
+  {
+    dat_4[i,"Group"] = "G1"
+  }
+}
+
+library(lmtest)
+bptest(dat_4$Residuals~dat_4$Group)
+```
+
+The alternative hypothesis is $H_{a}$ : residuals are heteroskedastic for any of the observations.
+
+The decision rule of the above test will be that we will reject the null hypothesis at 5% level of significance if the p-value is less than or equal to the level of significance.
+
+Conclusion : As the p-value is greater than 0.05, we fail to reject the null hypothesis at 5% level of significance. So, we can conclude that the residuals are homoscedastic, which violates my findings in part (a).
+
+
+
+PROBLEM 5. 
+
+
+Loading the dataset in R and renaming the columns : 
+
+```{r}
+dat5 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr5Data.txt")
+dat_5 = data.frame(dat5)
+dat_5 = dat_5 %>%
+  rename("Y" = "V1","X" = "V2")
+```
+
+
+Part (a) 
+
+```{r}
+plot(dat_5$X,dat_5$Y,xlab = "X", ylab = "Y",main = "Scatter plot")
+```
+
+Comment : Though the relationship between the response and covariate seem to be linear, we can not be sure of this without performing residual analysis. A transformation on X or Y might be appropriate, which we can not confirm without looking at the distribution of residuals. If we see that the error terms are not properly distributed, we might opt to transform either of the variables or both.
+
+Part (b) 
+
+Transforming the covariate value and fitting the linear regression : 
+
+```{r}
+for(i in 1:length((dat_5$X)))
+{
+  dat_5[i,"X_new"] = sqrt(dat_5[i,"X"])
+}
+
+mod_5_1 = lm(Y~X_new,dat_5)
+summary(mod_5_1)
+```
+
+The estimated regression equation is : $\hat{Y}=1.2547+3.6235X^{'}$
+
+
+Part (c) 
+
+
+```{r}
+plot(dat_5$X_new,dat_5$Y,xlab = "X", ylab = "Y")
+abline(mod_5_1,col = "red")
+```
+
+Comment : The regression line appears to be a good fit to the transformed data as the data points in the scatter plot seem to form a close band around the estimated regression line, thus decreasing the deviance from the actual values, but, we can not make any final conclusion without performing residual analysis.
+
+
+Part (d) 
+
+
+Obtaining the residuals : 
+
+
+```{r}
+fit_5_1 = predict(mod_5_1,dat_5)
+res_5_1 = residuals(mod_5_1)
+plot(fit_5_1,res_5_1,xlab = "New fitted values", ylab = "Residuals of the new model")
+abline(0,0,col = "red")
+
+
+qqnorm(res_5_1)
+qqline(res_5_1,col = "red")
+```
+
+
+Comment : The residuals vs fit plot shows that the residuals are random, indicating linearity. Although, the data points are seemingly not forming any bound around the line y = 0, indicating high variances of the error terms. The normal probability plots indicates that we can reasonably assume normality of the residuals.
+
+
+Part (e) 
+
+The estimated regression line is : $\hat{Y}=1.2547+3.6235\sqrt{X}$
+
+
+
+
+PROBLEM 6.
+
+
+If the error terms of a regression model are identically distributed independent $N(0,\sigma^{2})$ and we make a transformation $X^{'}$ = 1/X, the error terms will still be normally distributed but, if we make a transformation $Y^{'}$ = 1/Y, the distribution of the error terms will change as the y-transformation changes the vertical distance of the residuals from the line of fit, which is not the case of x-transformation. 
+
+
+
+PROBLEM 7.
+
+
+When the joint confidence intervals for $\beta_{0}$ and $\beta_{1}$ are developed by Bonferroni method with a family confidence coefficient of 90%, it implies that 10% of the times the intervals would not contain the parameter estimates. They do not have to be equal for each of them, i.e, the percentage of times would not be equal for the two estimates. It may be such that 6% of the times, the interval of $\beta_{0}$ may not contain its estimates and 4% of the times, the interval of $\beta_{1}$ may not contain its estimates. This depends on the data and the methodology involved in the analysis, thus having different interpretations for different situations.
+
+
+
+PROBLEM 8.
+
+
+Loading the dataset in R and renaming the columns : 
+
+
+```{r}
+dat8 = read.table("C:/Users/Jayaditya Nath/Downloads/HW5Pr8Data.txt")
+dat_8 = data.frame(dat8)
+dat_8 = dat_8 %>%
+  rename("X"="V2","Y"="V1")
+```
+
+
+
+Part (a) 
+
+
+```{r}
+mod_8 = lm(Y~X, data = dat_8)
+summary(mod_8)
+
+library(asbio)
+
+joint.ci.bonf(mod_8,conf = 0.95)
+```
+
+
+
+Part (b) 
+
+As the consultant has suggested that $\beta_{0}$ and $\beta_{1}$ should be 0 and 14 respectively, the computed joint Bonferroni confidence bands in part (a) support this view as the confidence intervals contains these two values respectively.
+
+
+Part (c) 
+
+
+```{r}
+new_dat_8 = data.frame(X = c(3,5,7))
+
+library(api2lm)
+predict_adjust(mod_8,new_dat_8,interval = "confidence", level = 0.90,method = "wh")
+```
+
+
+
+Part (d) 
+
+
+```{r}
+new_dat_8_1 = data.frame(X = c(4,7))
+
+predict_adjust(mod_8,new_dat_8_1,interval = "predict", level = 0.90,method = "bonferroni")
+predict_adjust(mod_8,new_dat_8_1,interval = "predict", level = 0.90,method = "scheffe")
+```
+
+
+Comment : The Bonferroni-adjusted prediction intervals are tighter compared to the Scheffe-adjusted prediction intervals.
+
+Part (e) 
+
+
+```{r}
+predict_adjust(mod_8,new_dat_8_1,interval = "predict", level = 0.90,method = "wh")
+```
+
+

@@ -1,0 +1,91 @@
+---
+title: "STAT8310_HW3"
+author: "JAYADITYA NATH"
+date: "2023-09-11"
+output: pdf_document
+---
+
+
+PROBLEM 1. 
+In the given problem, we have to find the minimum sample size on the basis of the underlying binomial probability distribution. 
+Let Y be a random variable denoting the number of plants with green seeds.
+So, Y ~ Binomial(n , p = 0.25)
+We have to find : P(Y>=10) $\leq$ 0.99 
+
+```{r}
+samp_size1 = seq(50,90,1)
+p = pbinom(10,size = samp_size1,prob = 0.25,lower.tail = FALSE)
+samp_size1[which(p >= 0.99)[1]]
+```
+
+Conclusion : On the basis of the above theory and code, we can conclude that the sample size should be greater than or equal to 76.
+
+
+
+PROBLEM 2.
+
+Part (a)
+
+We find a 95% confidence interval for the homeowners of Columbia, who would support a tax increase as follows : 
+
+```{r}
+prop.test(37,80,alternative = "two.sided", conf.level = 0.95)$conf.int
+```
+
+Thus, the population proportion of homeowners in Columbia, who would support a tax increase is between (0.3516203,0.5770080)
+
+
+Part (b)
+
+Performing a chi-squared test to check whether the population proportion of homeowners in two cities supporting a tax increase are equal or not : 
+ 
+```{r}
+prop.test(c(37,47),c(80,120),alternative = "two.sided",conf.level = 0.95)
+```
+
+Conclusion : As the p-value is greater than the level of significance $\alpha = 0.05$, we fail to reject the null hypothesis and thus can conclude that the population proportion of homeowners in two cities supporting a tax increase are equal.
+
+
+Part (c)
+
+```{r}
+prop.test(c(37,47),c(80,120),alternative = "two.sided",conf.level = 0.95)$conf.int
+```
+
+Thus, the difference in population of homeowners in both the cities supporting a tax increase lies between : (-0.07945604,0.22112271)
+
+
+Part (d)
+
+The required sample size is calculated as follows : 
+
+```{r}
+p_hatC = 37/80
+D_C = 0.01 #actually, less than equal to 0.01
+z_C = qnorm(0.05/2,lower.tail = FALSE)
+
+samp_sizeC = ((z_C*(sqrt(p_hatC*(1-p_hatC))))/D_C)^2
+round(samp_sizeC)
+```
+
+Conclusion : The required sample size on the basis of the given constraints should be greater than or equal to 9550.
+
+
+PROBLEM 3. 
+
+Part (a)
+
+To compare the effectiveness of the sprays , we can perform a Chi-squared testing of hypothesis to compare the proportion of the apples that are not worm infested after application of both the sprays : 
+
+```{r}
+no_wormyA = 2130-1299
+no_wormyB = 2190-1183
+prop.test(c(no_wormyA,no_wormyB),c(2130,2190),alternative = "two.sided")
+```
+
+Conclusion : As the p-value is way less than the level of significance, we can reject the null hypothesis at 5% level of significance and thus, can conclude that the proportion of the apples that are not moth-infested after the application of the sprays are not the same. This implies that the sprays A and B are not equally effective.
+
+
+Part (b)
+
+I think that the Pearsonian Chi-Square test is valid here for the inferential procedure because both the variables under consideration are categorical, all the observations are independent as the trees considered are different, the cells of the contingency table are mutually exclusive for obvious reasons and we can see that $n\hat{p}$ for each cell is more than 5.
